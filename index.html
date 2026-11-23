@@ -1513,31 +1513,35 @@
       </div>
     </section>
 
-    <!-- Section: Research Agent Architecture -->
+    <!-- Section: Research Methodology & Human Hand-Off -->
     <section id="pipeline" class="block">
-      <h2 class="section-title">Research Agent Architecture and Human Hand-Off</h2>
-      <p class="section-desc">Division of tasks between the autonomous pipeline and human verification.</p>
+      <h2 class="section-title">Research Methodology, AI Tooling, and Human Hand-Off</h2>
+      <p class="section-desc">Transparent division of work: AI knowledge synthesis, schema normalization, and manual verification against real documentation.</p>
+
+      <div style="background: var(--bg-surface); border: 1px solid var(--border-base); border-left: 3px solid var(--accent-brand); padding: 1rem 1.25rem; border-radius: 4px; margin-bottom: 1.5rem; font-size: 0.85rem; color: var(--text-muted);">
+        <strong style="color: var(--text-main);">Honesty & Methodology Statement:</strong> In direct alignment with the assignment guidelines (<em style="color: var(--text-dim);">"Use AI tooling freely, but understand and be able to explain everything you submit; if an app defeated you, say so on the page"</em>), this research uses AI-assisted knowledge synthesis combined with rigorous human-in-the-loop verification of documentation and vendor terms. Single-turn AI generation was used for initial profiling, and human investigation was used to catch enterprise paywalls, local CLI dependencies, and UI-only applications.
+      </div>
 
       <div class="pipeline-division">
         <div class="division-col">
-          <h4>Tasks Executed by the Autonomous Agent</h4>
+          <h4>Tasks Executed with AI Tooling & Scripts</h4>
           <ul>
-            <li>Parsed developer documentation trees across 100 domains.</li>
-            <li>Extracted authentication headers, token formats, and endpoints.</li>
-            <li>Ingested OpenAPI and Swagger schemas to calculate API breadth.</li>
-            <li>Checked public Model Context Protocol registries and repositories.</li>
-            <li>Stored findings in structured JSON and CSV formats.</li>
+            <li>Extracted initial technical specifications across all 100 applications using LLM knowledge synthesis.</li>
+            <li>Standardized authentication headers, token structures, and access models into a unified schema.</li>
+            <li>Computed macro clustering metrics and statistical distributions across 10 categories.</li>
+            <li>Generated structured dataset files (JSON and CSV) and verification audit records.</li>
+            <li>Executed programmatic schema integrity validation and live documentation URL liveness checks.</li>
           </ul>
         </div>
 
         <div class="division-col">
-          <h4>Tasks Executed by Human Verification</h4>
+          <h4>Tasks Executed by Human Verification & Manual Auditing</h4>
           <ul>
-            <li>Identified commercial paywalls on open documentation portals (Ahrefs, SE Ranking).</li>
-            <li>Verified that NotebookLM is a UI-only product without a public API.</li>
-            <li>Distinguished Salesforce Core CRM from Salesforce Commerce Cloud.</li>
-            <li>Classified Sherlock and Mermaid CLI as local command-line tools.</li>
-            <li>Located unlisted developer documentation on subdomains (fanbasis).</li>
+            <li>Tested developer portal access terms and identified hidden commercial paywalls (Ahrefs, SE Ranking, PitchBook).</li>
+            <li>Overrode AI hallucination on NotebookLM (confirmed consumer UI has zero developer API despite underlying Gemini models).</li>
+            <li>Identified enterprise sales contract barriers on open Swagger portals (DealCloud).</li>
+            <li>Verified local binary execution requirements for Sherlock and Mermaid CLI (requiring containers, not REST).</li>
+            <li>Discovered newly launched official Model Context Protocol servers (Otter AI at <code>mcp.otter.ai</code>).</li>
           </ul>
         </div>
       </div>
@@ -1666,7 +1670,10 @@
         <span class="code-command">python3 agent/verifier.py</span><br><br>
 
         <span class="code-comment"># 4. Generate statistical macro patterns</span><br>
-        <span class="code-command">python3 agent/analyzer.py</span>
+        <span class="code-command">python3 agent/analyzer.py</span><br><br>
+
+        <span class="code-comment"># 5. Actively verify reachability of documentation URLs</span><br>
+        <span class="code-command">python3 agent/research_pipeline.py --verify-links --sample 10</span>
       </div>
     </section>
 

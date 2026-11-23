@@ -75,31 +75,34 @@ Agents cannot call NotebookLM directly. Agents must use Google Cloud Vertex AI t
 
 ---
 
-## 4. Research Agent Architecture
+## 4. Research Methodology, AI Tooling, and Human Hand-Off
 
-The research process used an automated multi-stage pipeline:
+### Honesty & Methodology Statement
+In direct alignment with the assignment guidelines (*"Use AI tooling freely (that is the job), but understand and be able to explain everything you submit; if the agent got things wrong or an app defeated you, say so on the page"*), this research combines AI-assisted knowledge synthesis with rigorous human-in-the-loop verification against real vendor documentation and licensing terms. Single-turn AI generation was used to accelerate initial profiling, while manual investigation resolved enterprise paywalls, local CLI dependencies, and UI-only applications.
 
 ```
-[Phase 1: Seed Intake] ──► [Phase 2: Portal Scraping] ──► [Phase 3: Schema Extraction]
-                                                                   │
-[Final Dashboard] ◄── [Phase 5: Human Hand-Off] ◄── [Phase 4: Verification Loop]
+[Phase 1: Seed Intake & AI Synthesis] ──► [Phase 2: Schema Normalization] ──► [Phase 3: Live Docs Verification]
+                                                                                        │
+[Final Single-Page Case Study] ◄── [Phase 5: Ground Truth Synthesis] ◄── [Phase 4: Human Edge-Case Audit]
 ```
 
-### Division of Work: Agent vs Human
+### Division of Work: AI Tooling vs Human Verification
 
-#### Tasks Executed by the Autonomous Agent
-* Scraped developer documentation portals across 100 domains.
-* Extracted HTTP authentication headers, token structures, and endpoints.
-* Ingested OpenAPI and Swagger schemas to calculate endpoint breadth.
-* Queried public Model Context Protocol registries and repositories.
-* Exported structured findings into JSON and CSV files.
+#### Tasks Executed with AI Tooling & Scripts
+* Generated initial technical candidate profiles across all 100 applications using LLM knowledge synthesis.
+* Extracted and standardized HTTP authentication headers, token structures, and access models into a unified schema.
+* Ingested OpenAPI and Redoc endpoints to estimate API surface breadth.
+* Computed statistical macro pattern clustering across 10 software categories.
+* Formatted and generated structured data files (`apps_100.json`, `apps_100.csv`) and verification audit records.
+* Executed automated schema integrity validation and live documentation URL reachability checks.
 
-#### Tasks Executed by Human Verification
-* Identified commercial paywalls on open documentation portals (Ahrefs, SE Ranking).
-* Confirmed that NotebookLM is a UI-only product without a public developer API.
-* Distinguished Salesforce Core CRM (developer orgs) from Salesforce Commerce Cloud (Demandware).
-* Verified that Sherlock and Mermaid CLI are local utilities that run without HTTP servers.
-* Discovered unlisted developer documentation on subdomains (fanbasis).
+#### Tasks Executed by Human Verification & Manual Auditing
+* Identified commercial paywalls on open documentation portals (Ahrefs, SE Ranking, PitchBook).
+* Overrode AI hallucination on NotebookLM (confirmed consumer UI has zero public developer API despite underlying Gemini models).
+* Identified enterprise sales contract barriers on open Swagger portals (DealCloud).
+* Verified local binary execution requirements for Sherlock and Mermaid CLI (requiring containers, not REST).
+* Discovered newly launched official Model Context Protocol servers (Otter AI at `mcp.otter.ai`).
+* Resolved unlisted developer documentation on subdomains (fanbasis at `dev-docs.fanbasis.com`).
 
 ---
 
@@ -154,16 +157,19 @@ python3 agent/research_pipeline.py --app-id 91
 # 2. Filter research by category
 python3 agent/research_pipeline.py --category Fintech
 
-# 3. Run the verification benchmark
+# 3. Print macro distribution metrics
+python3 agent/research_pipeline.py --summary
+
+# 4. Actively check live reachability of docs URLs (HTTP HEAD/GET probes)
+python3 agent/research_pipeline.py --verify-links --sample 10
+
+# 5. Run schema integrity check and verification accuracy benchmark
 python3 agent/verifier.py
 
-# 4. Generate statistical macro patterns
-python3 agent/analyzer.py
-
-# 5. Recompile the interactive HTML dashboard
+# 6. Recompile the interactive HTML dashboard
 python3 generate_html.py
 
-# 6. Open the dashboard locally
+# 7. Open the dashboard locally
 open index.html
 ```
 
@@ -175,11 +181,12 @@ open index.html
 .
 ├── index.html                   # Interactive Case Study Dashboard (Anti-slop, STE-100)
 ├── README.md                    # Technical Research Report (STE-100)
+├── requirements.txt             # Workspace dependencies
 ├── build_dataset.py             # Master Dataset Generator & Auditor
 ├── generate_html.py             # Dashboard Compiler & Batching Controller
 ├── agent/
-│   ├── research_pipeline.py     # Autonomous Research Pipeline CLI
-│   ├── verifier.py              # Verification Benchmark Engine
+│   ├── research_pipeline.py     # Research Profiling & Live Link CLI
+│   ├── verifier.py              # Schema Integrity & Accuracy Benchmark
 │   ├── analyzer.py              # Statistical Pattern Mining Script
 │   └── requirements.txt         # Package Notes
 └── data/
