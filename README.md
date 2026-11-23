@@ -3,6 +3,9 @@
 > **Composio AI Product Ops Evaluation**  
 > An automated research pipeline and verification audit for 100 software applications across 10 categories. 
 > Analyzes authentication types, developer access limits, API surfaces, and Model Context Protocol (MCP) readiness.
+>
+> 🌐 **Live Deployed Case Study Dashboard:** [https://pushpam2404.github.io/composio-product-ops-takehome/](https://pushpam2404.github.io/composio-product-ops-takehome/)  
+> 📦 **GitHub Source Repository:** [https://github.com/pushpam2404/composio-product-ops-takehome](https://github.com/pushpam2404/composio-product-ops-takehome)
 
 ---
 
@@ -195,3 +198,10 @@ open index.html
     ├── patterns_summary.json    # Statistical Pattern Distributions
     └── verification_audit.json  # Verification Progression & Discrepancy Logs
 ```
+
+---
+
+## 8. Deliverable Submission Links
+
+* **Live Deployed HTML Page / Case Study:** [https://pushpam2404.github.io/composio-product-ops-takehome/](https://pushpam2404.github.io/composio-product-ops-takehome/)
+* **GitHub Source Repository:** [https://github.com/pushpam2404/composio-product-ops-takehome](https://github.com/pushpam2404/composio-product-ops-takehome)
