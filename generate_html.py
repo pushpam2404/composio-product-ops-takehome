@@ -3,6 +3,7 @@
 generate_html.py
 Builds the standalone, anti-slop, ASD-STE100 compliant single-page case study.
 Applies:
+  - Theme switching: Full Dark and Light mode support with local storage persistence and system preference fallback.
   - tasteskill 2.5: Zero AI-slop gradients (no violet/lavender), quiet micro-interactions, equal edges,
     verb-object button labels, plain factual copy.
   - UI/UX Pro Max: Column sorting (asc/desc), sticky table header, Escape key modal handling,
@@ -30,7 +31,7 @@ def generate_html():
     audit_json_str = json.dumps(audit).replace("</script>", "<\\/script>")
 
     html = f"""<!DOCTYPE html>
-<html lang="en" data-type="software" data-radius="sharp">
+<html lang="en" data-type="software" data-radius="sharp" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -42,7 +43,8 @@ def generate_html():
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    :root {{
+    /* Dark Theme (Default) */
+    :root, html[data-theme="dark"] {{
       --bg-page: #0b0d11;
       --bg-surface: #12151c;
       --bg-surface-active: #181c25;
@@ -59,8 +61,30 @@ def generate_html():
       --accent-amber: #d97706;
       --accent-rose: #e11d48;
       
-      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      --font-mono: 'JetBrains Mono', monospace;
+      --table-th-bg: #0f1218;
+      --code-bg: #07090c;
+    }}
+
+    /* Light Theme (High Contrast, Clean Engineering Palette) */
+    html[data-theme="light"] {{
+      --bg-page: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-surface-active: #f1f5f9;
+      --bg-subtle: #f1f5f9;
+      --border-base: #e2e8f0;
+      --border-strong: #cbd5e1;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-dim: #64748b;
+      
+      --accent-brand: #c2410c; /* Deepened flame for light contrast */
+      --accent-blue: #1d4ed8;
+      --accent-emerald: #047857;
+      --accent-amber: #b45309;
+      --accent-rose: #be123c;
+      
+      --table-th-bg: #f1f5f9;
+      --code-bg: #0f172a; /* Keep terminal high-contrast slate */
     }}
 
     * {{
@@ -70,16 +94,17 @@ def generate_html():
     }}
 
     body {{
-      font-family: var(--font-sans);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background-color: var(--bg-page);
       color: var(--text-main);
       line-height: 1.5;
       font-size: 14px;
       -webkit-font-smoothing: antialiased;
+      transition: background-color 0.2s ease, color 0.2s ease;
     }}
 
     code, pre, .font-mono {{
-      font-family: var(--font-mono);
+      font-family: 'JetBrains Mono', monospace;
     }}
 
     /* Global Layout Bounds */
@@ -92,11 +117,12 @@ def generate_html():
     /* Header Nav: Quiet, Factual */
     header.top-nav {{
       border-bottom: 1px solid var(--border-base);
-      background: rgba(11, 13, 17, 0.96);
+      background: var(--bg-page);
       position: sticky;
       top: 0;
       z-index: 100;
       backdrop-filter: blur(8px);
+      transition: background-color 0.2s ease, border-color 0.2s ease;
     }}
 
     .nav-inner {{
@@ -176,7 +202,7 @@ def generate_html():
     }}
 
     .btn-primary:hover {{
-      background: #e2e8f0;
+      opacity: 0.92;
     }}
 
     .btn-secondary {{
@@ -189,6 +215,28 @@ def generate_html():
       background: var(--bg-surface-active);
       color: var(--text-main);
       border-color: var(--border-strong);
+    }}
+
+    /* Theme Toggle Button */
+    .theme-toggle-btn {{
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      color: var(--text-muted);
+      padding: 0.45rem 0.75rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.15s ease;
+    }}
+
+    .theme-toggle-btn:hover {{
+      color: var(--text-main);
+      border-color: var(--border-strong);
+      background: var(--bg-surface-active);
     }}
 
     /* Main Container */
@@ -223,6 +271,7 @@ def generate_html():
       border-radius: 6px;
       padding: 2rem;
       margin-bottom: 2rem;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
     }}
 
     .eyebrow {{
@@ -263,6 +312,7 @@ def generate_html():
       border-radius: 6px;
       overflow: hidden;
       margin-bottom: 2.5rem;
+      transition: border-color 0.2s ease;
     }}
 
     @media (max-width: 960px) {{
@@ -274,6 +324,7 @@ def generate_html():
     .stat-box {{
       background: var(--bg-surface);
       padding: 1.2rem 1.25rem;
+      transition: background-color 0.2s ease;
     }}
 
     .stat-number {{
@@ -314,7 +365,7 @@ def generate_html():
       border: 1px solid var(--border-base);
       border-radius: 6px;
       padding: 1.25rem;
-      transition: border-color 0.15s;
+      transition: border-color 0.15s, background-color 0.2s ease;
     }}
 
     .finding-card:hover {{
@@ -365,6 +416,7 @@ def generate_html():
       border: 1px solid var(--border-base);
       border-radius: 6px;
       padding: 1.25rem;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
     }}
 
     .chart-header {{
@@ -446,6 +498,7 @@ def generate_html():
       border: 1px solid var(--border-base);
       border-radius: 6px;
       padding: 1.25rem;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
     }}
 
     .matrix-card.win {{
@@ -484,6 +537,7 @@ def generate_html():
       justify-content: space-between;
       align-items: center;
       font-size: 0.775rem;
+      transition: background-color 0.2s ease;
     }}
 
     .matrix-item .app-name {{
@@ -507,6 +561,7 @@ def generate_html():
       display: flex;
       flex-direction: column;
       gap: 0.85rem;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
     }}
 
     .controls-top {{
@@ -533,7 +588,8 @@ def generate_html():
       font-size: 0.8rem;
       color: var(--text-main);
       outline: none;
-      font-family: var(--font-sans);
+      font-family: inherit;
+      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
     }}
 
     .search-box input:focus {{
@@ -563,6 +619,7 @@ def generate_html():
       border-radius: 4px;
       border: 1px solid var(--border-base);
       white-space: nowrap;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
     }}
 
     .controls-batching {{
@@ -583,6 +640,7 @@ def generate_html():
       outline: none;
       font-family: var(--font-mono);
       cursor: pointer;
+      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
     }}
 
     .batch-select:focus {{
@@ -636,6 +694,7 @@ def generate_html():
       overflow-x: auto;
       max-height: 720px;
       -webkit-overflow-scrolling: touch;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
     }}
 
     table.data-table {{
@@ -649,7 +708,7 @@ def generate_html():
       position: sticky;
       top: 0;
       z-index: 10;
-      background: #0f1218;
+      background: var(--table-th-bg);
       padding: 0.65rem 0.85rem;
       font-size: 0.725rem;
       text-transform: uppercase;
@@ -660,11 +719,11 @@ def generate_html():
       white-space: nowrap;
       cursor: pointer;
       user-select: none;
+      transition: background-color 0.2s ease, color 0.1s ease;
     }}
 
     table.data-table th:hover {{
       color: var(--text-main);
-      background: #141820;
     }}
 
     table.data-table th .sort-indicator {{
@@ -677,6 +736,7 @@ def generate_html():
       padding: 0.75rem 0.85rem;
       border-bottom: 1px solid var(--border-base);
       vertical-align: middle;
+      transition: border-color 0.2s ease;
     }}
 
     table.data-table tbody tr {{
@@ -704,49 +764,49 @@ def generate_html():
 
     .tag-ready {{
       background: rgba(5, 150, 105, 0.15);
-      color: #34d399;
+      color: var(--accent-emerald);
       border: 1px solid rgba(5, 150, 105, 0.35);
     }}
 
     .tag-partial {{
       background: rgba(217, 119, 6, 0.15);
-      color: #fbbf24;
+      color: var(--accent-amber);
       border: 1px solid rgba(217, 119, 6, 0.35);
     }}
 
     .tag-friction {{
       background: rgba(225, 29, 72, 0.15);
-      color: #fb7185;
+      color: var(--accent-rose);
       border: 1px solid rgba(225, 29, 72, 0.35);
     }}
 
     .tag-blocked {{
       background: rgba(90, 100, 117, 0.2);
-      color: #94a3b8;
+      color: var(--text-dim);
       border: 1px solid rgba(90, 100, 117, 0.4);
     }}
 
     .tag-selfserve {{
       background: rgba(37, 99, 235, 0.12);
-      color: #60a5fa;
+      color: var(--accent-blue);
       border: 1px solid rgba(37, 99, 235, 0.3);
     }}
 
     .tag-gated {{
       background: rgba(225, 29, 72, 0.12);
-      color: #f87171;
+      color: var(--accent-rose);
       border: 1px solid rgba(225, 29, 72, 0.3);
     }}
 
     .tag-paid {{
       background: rgba(217, 119, 6, 0.12);
-      color: #fbbf24;
+      color: var(--accent-amber);
       border: 1px solid rgba(217, 119, 6, 0.3);
     }}
 
     .tag-mcp {{
       background: rgba(226, 88, 34, 0.15);
-      color: #fb923c;
+      color: var(--accent-brand);
       border: 1px solid rgba(226, 88, 34, 0.35);
     }}
 
@@ -762,6 +822,7 @@ def generate_html():
       border-radius: 0 0 6px 6px;
       flex-wrap: wrap;
       gap: 0.75rem;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
     }}
 
     .expand-btn {{
@@ -776,7 +837,7 @@ def generate_html():
       font-size: 0.775rem;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.15s;
+      transition: background 0.15s, border-color 0.15s;
     }}
 
     .expand-btn:hover {{
@@ -799,6 +860,7 @@ def generate_html():
       font-size: 0.75rem;
       font-family: var(--font-mono);
       cursor: pointer;
+      transition: all 0.12s;
     }}
 
     .page-btn:hover:not(:disabled) {{
@@ -830,6 +892,7 @@ def generate_html():
       border: 1px solid var(--border-base);
       border-radius: 6px;
       padding: 1.25rem;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
     }}
 
     .audit-step.final {{
@@ -876,6 +939,7 @@ def generate_html():
       border: 1px solid var(--border-base);
       border-radius: 6px;
       padding: 1.25rem;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
     }}
 
     .case-title-row {{
@@ -899,7 +963,7 @@ def generate_html():
       border-radius: 4px;
       padding: 0.5rem 0.65rem;
       font-size: 0.775rem;
-      color: #fda4af;
+      color: var(--accent-rose);
       margin-bottom: 0.5rem;
     }}
 
@@ -909,7 +973,7 @@ def generate_html():
       border-radius: 4px;
       padding: 0.5rem 0.65rem;
       font-size: 0.775rem;
-      color: #6ee7b7;
+      color: var(--accent-emerald);
       margin-bottom: 0.5rem;
     }}
 
@@ -938,6 +1002,7 @@ def generate_html():
       border: 1px solid var(--border-base);
       border-radius: 6px;
       padding: 1.25rem;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
     }}
 
     .division-col h4 {{
@@ -971,7 +1036,7 @@ def generate_html():
 
     /* Code Terminal Box */
     .code-panel {{
-      background: #07090c;
+      background: var(--code-bg);
       border: 1px solid var(--border-base);
       border-radius: 6px;
       padding: 1.25rem;
@@ -983,11 +1048,11 @@ def generate_html():
     }}
 
     .code-comment {{
-      color: var(--text-dim);
+      color: #64748b;
     }}
 
     .code-command {{
-      color: var(--text-main);
+      color: #38bdf8;
       font-weight: 600;
     }}
 
@@ -1004,6 +1069,7 @@ def generate_html():
       align-items: center;
       justify-content: center;
       padding: 1.5rem;
+      backdrop-filter: blur(4px);
     }}
 
     .modal-overlay.open {{
@@ -1020,6 +1086,8 @@ def generate_html():
       overflow-y: auto;
       padding: 1.75rem;
       position: relative;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+      transition: background-color 0.2s ease, border-color 0.2s ease;
     }}
 
     .modal-close-btn {{
@@ -1093,7 +1161,12 @@ def generate_html():
         <li><a href="#verification">Verification</a></li>
         <li><a href="#cli">Run Agent</a></li>
       </ul>
-      <div style="display: flex; gap: 0.5rem;">
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <!-- Dark / Light Theme Toggle Button -->
+        <button id="themeToggleBtn" class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Toggle dark and light color theme">
+          <span id="themeIcon">&#9728;</span>
+          <span id="themeLabel">Light</span>
+        </button>
         <button class="btn btn-secondary" onclick="exportData('csv')">Download CSV</button>
         <button class="btn btn-secondary" onclick="exportData('json')">Download JSON</button>
       </div>
@@ -1137,7 +1210,7 @@ def generate_html():
           <div class="stat-sub">Official server available</div>
         </div>
         <div class="stat-box">
-          <div class="stat-number" style="color: #34d399;">+17%</div>
+          <div class="stat-number" style="color: var(--accent-emerald);">+17%</div>
           <div class="stat-title">Verification Gain</div>
           <div class="stat-sub">70% Pass 1 to 87% Pass 2</div>
         </div>
@@ -1222,22 +1295,22 @@ def generate_html():
           </div>
           <div class="chart-row">
             <div class="chart-row-label">OAuth2</div>
-            <div class="chart-track"><div class="chart-fill" style="width: 33%; background: #3b82f6;"></div></div>
+            <div class="chart-track"><div class="chart-fill" style="width: 33%; background: var(--accent-blue);"></div></div>
             <div class="chart-row-val">33%</div>
           </div>
           <div class="chart-row">
             <div class="chart-row-label">HTTP Basic</div>
-            <div class="chart-track"><div class="chart-fill" style="width: 3%; background: #d97706;"></div></div>
+            <div class="chart-track"><div class="chart-fill" style="width: 3%; background: var(--accent-amber);"></div></div>
             <div class="chart-row-val">3%</div>
           </div>
           <div class="chart-row">
             <div class="chart-row-label">CLI / Local / No Auth</div>
-            <div class="chart-track"><div class="chart-fill" style="width: 3%; background: #059669;"></div></div>
+            <div class="chart-track"><div class="chart-fill" style="width: 3%; background: var(--accent-emerald);"></div></div>
             <div class="chart-row-val">3%</div>
           </div>
           <div class="chart-row">
             <div class="chart-row-label">Custom / HMAC</div>
-            <div class="chart-track"><div class="chart-fill" style="width: 2%; background: #e11d48;"></div></div>
+            <div class="chart-track"><div class="chart-fill" style="width: 2%; background: var(--accent-rose);"></div></div>
             <div class="chart-row-val">2%</div>
           </div>
         </div>
@@ -1249,17 +1322,17 @@ def generate_html():
           </div>
           <div class="chart-row">
             <div class="chart-row-label">Self-Serve (Free / Trial)</div>
-            <div class="chart-track"><div class="chart-fill" style="width: 73%; background: #059669;"></div></div>
+            <div class="chart-track"><div class="chart-fill" style="width: 73%; background: var(--accent-emerald);"></div></div>
             <div class="chart-row-val">73%</div>
           </div>
           <div class="chart-row">
             <div class="chart-row-label">Partner / Sales Gate</div>
-            <div class="chart-track"><div class="chart-fill" style="width: 15%; background: #e11d48;"></div></div>
+            <div class="chart-track"><div class="chart-fill" style="width: 15%; background: var(--accent-rose);"></div></div>
             <div class="chart-row-val">15%</div>
           </div>
           <div class="chart-row">
             <div class="chart-row-label">Paid Plan Gate</div>
-            <div class="chart-track"><div class="chart-fill" style="width: 12%; background: #d97706;"></div></div>
+            <div class="chart-track"><div class="chart-fill" style="width: 12%; background: var(--accent-amber);"></div></div>
             <div class="chart-row-val">12%</div>
           </div>
           <div class="chart-row" style="margin-top: 1rem; padding-top: 0.5rem; border-top: 1px dashed var(--border-base);">
@@ -1504,7 +1577,7 @@ def generate_html():
         <div class="audit-step">
           <div class="audit-step-header">
             <span class="audit-step-title">Pass 2: Verification Loop</span>
-            <span class="audit-step-pct" style="color: #60a5fa;">87.0%</span>
+            <span class="audit-step-pct" style="color: var(--accent-blue);">87.0%</span>
           </div>
           <p class="audit-step-desc">
             Automated cross-check. Verified HTTP status codes, tested OpenAPI endpoints, and checked MCP registries. 
@@ -1515,7 +1588,7 @@ def generate_html():
         <div class="audit-step final">
           <div class="audit-step-header">
             <span class="audit-step-title">Pass 3: Human Ground Truth</span>
-            <span class="audit-step-pct" style="color: #34d399;">100.0%</span>
+            <span class="audit-step-pct" style="color: var(--accent-emerald);">100.0%</span>
           </div>
           <p class="audit-step-desc">
             Manual inspection of edge cases, payment paywalls, and unlisted subdomains.
@@ -1648,6 +1721,43 @@ def generate_html():
     let sortColumn = 'id';
     let sortDirection = 'asc';
 
+    // ----------------------------------------------------
+    // Theme Switcher (Dark / Light) with Persistence
+    // ----------------------------------------------------
+    function initTheme() {{
+      const savedTheme = localStorage.getItem('composio_theme');
+      if (savedTheme) {{
+        setTheme(savedTheme);
+      }} else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {{
+        setTheme('light');
+      }} else {{
+        setTheme('dark');
+      }}
+    }}
+
+    function setTheme(theme) {{
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('composio_theme', theme);
+      const icon = document.getElementById('themeIcon');
+      const label = document.getElementById('themeLabel');
+      if (theme === 'light') {{
+        icon.innerHTML = '&#9790;'; // Moon symbol
+        label.innerText = 'Dark';
+      }} else {{
+        icon.innerHTML = '&#9728;'; // Sun symbol
+        label.innerText = 'Light';
+      }}
+    }}
+
+    function toggleTheme() {{
+      const current = document.documentElement.getAttribute('data-theme') || 'dark';
+      const target = (current === 'dark') ? 'light' : 'dark';
+      setTheme(target);
+    }}
+
+    // ----------------------------------------------------
+    // Data Table Logic
+    // ----------------------------------------------------
     function getFilteredApps() {{
       let list = rawApps.filter(app => {{
         if (currentCategory !== 'all' && app.category !== currentCategory) return false;
@@ -1773,7 +1883,7 @@ def generate_html():
             <td><span class="tag ${{bClass}}">${{app.buildability}}</span></td>
             <td><span class="tag ${{mClass}}">${{mcpLabel}}</span></td>
             <td>
-              <a href="${{app.docs_url}}" target="_blank" rel="noopener noreferrer" style="color: #60a5fa; text-decoration: none; font-size: 0.75rem;" onclick="event.stopPropagation()">
+              <a href="${{app.docs_url}}" target="_blank" rel="noopener noreferrer" style="color: var(--accent-blue); text-decoration: none; font-size: 0.75rem; font-weight: 500;" onclick="event.stopPropagation()">
                 Open &nearr;
               </a>
             </td>
@@ -1948,7 +2058,8 @@ def generate_html():
       }}
     }}
 
-    // Initial render & sort indicators
+    // Initializations
+    initTheme();
     updateSortIndicators();
     renderTable();
   </script>
@@ -1958,7 +2069,7 @@ def generate_html():
 
     with open("index.html", "w", encoding="utf-8") as f:
         f.write(html)
-    print("Wrote index.html with column sorting, sticky headers, Escape key listener, and tasteskill/STE100 rules.")
+    print("Wrote index.html with dark and light mode toggle, local persistence, and high contrast styling.")
 
 if __name__ == "__main__":
     generate_html()
