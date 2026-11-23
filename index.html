@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Composio Product Ops: 100 App Toolkits Technical Audit</title>
+  <title>Composio Product Ops: 100 Application Toolkits Technical Audit</title>
   <meta name="description" content="Technical research report and verification audit for 100 software applications. Analyzes authentication methods, access limits, API surfaces, and Model Context Protocol support.">
   <meta name="page-type" content="software">
   <meta name="site-kind" content="software">
@@ -61,7 +61,7 @@
     /* Header Nav: Quiet, Factual */
     header.top-nav {
       border-bottom: 1px solid var(--border-base);
-      background: rgba(11, 13, 17, 0.95);
+      background: rgba(11, 13, 17, 0.96);
       position: sticky;
       top: 0;
       z-index: 100;
@@ -119,6 +119,7 @@
       color: var(--text-main);
     }
 
+    /* Verb-Object Buttons */
     .btn {
       display: inline-flex;
       align-items: center;
@@ -130,7 +131,12 @@
       cursor: pointer;
       border: 1px solid transparent;
       text-decoration: none;
-      transition: background 0.15s, border-color 0.15s;
+      transition: background 0.12s, border-color 0.12s, transform 0.08s;
+      user-select: none;
+    }
+
+    .btn:active {
+      transform: translateY(1px);
     }
 
     .btn-primary {
@@ -159,7 +165,7 @@
       padding: 2.5rem 0 6rem;
     }
 
-    /* Section Structure: Crisp & Clean */
+    /* Section Structure */
     section.block {
       margin-bottom: 3.5rem;
     }
@@ -216,7 +222,7 @@
       max-width: 840px;
     }
 
-    /* Stats Ribbon: High Density */
+    /* Stats Ribbon */
     .stats-row {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
@@ -277,6 +283,11 @@
       border: 1px solid var(--border-base);
       border-radius: 6px;
       padding: 1.25rem;
+      transition: border-color 0.15s;
+    }
+
+    .finding-card:hover {
+      border-color: var(--border-strong);
     }
 
     .finding-tag {
@@ -478,7 +489,7 @@
     .search-box {
       flex: 1;
       min-width: 260px;
-      max-width: 480px;
+      max-width: 440px;
       position: relative;
     }
 
@@ -508,7 +519,7 @@
       pointer-events: none;
     }
 
-    /* Counter Placed Directly Near Filters */
+    /* Top Counter Badge */
     .top-count-badge {
       display: inline-flex;
       align-items: center;
@@ -587,12 +598,13 @@
       font-weight: 600;
     }
 
-    /* Table Component */
+    /* Table Component: Sticky Header & Sortable Columns */
     .table-frame {
       border: 1px solid var(--border-base);
       background: var(--bg-surface);
-      border-radius: 0 0 6px 6px;
       overflow-x: auto;
+      max-height: 720px;
+      -webkit-overflow-scrolling: touch;
     }
 
     table.data-table {
@@ -603,6 +615,9 @@
     }
 
     table.data-table th {
+      position: sticky;
+      top: 0;
+      z-index: 10;
       background: #0f1218;
       padding: 0.65rem 0.85rem;
       font-size: 0.725rem;
@@ -612,6 +627,19 @@
       border-bottom: 1px solid var(--border-base);
       font-weight: 600;
       white-space: nowrap;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    table.data-table th:hover {
+      color: var(--text-main);
+      background: #141820;
+    }
+
+    table.data-table th .sort-indicator {
+      margin-left: 0.25rem;
+      font-size: 0.7rem;
+      color: var(--text-dim);
     }
 
     table.data-table td {
@@ -1035,8 +1063,8 @@
         <li><a href="#cli">Run Agent</a></li>
       </ul>
       <div style="display: flex; gap: 0.5rem;">
-        <button class="btn btn-secondary" onclick="exportData('csv')">CSV</button>
-        <button class="btn btn-secondary" onclick="exportData('json')">JSON</button>
+        <button class="btn btn-secondary" onclick="exportData('csv')">Download CSV</button>
+        <button class="btn btn-secondary" onclick="exportData('json')">Download JSON</button>
       </div>
     </div>
   </header>
@@ -1135,7 +1163,7 @@
           <h3>Local CLI Tools Require Container Runtimes</h3>
           <p>
             Sherlock and Mermaid CLI do not expose cloud REST APIs. 
-            An agent framework must support local container execution to run open-source command-line tools.
+            An agent runtime must support local container execution to run open-source command-line tools.
           </p>
         </div>
 
@@ -1280,7 +1308,7 @@
     <!-- Section: 100 App Findings Matrix -->
     <section id="matrix" class="block">
       <h2 class="section-title">100 Application Findings Matrix</h2>
-      <p class="section-desc">Search, filter, and inspect technical specifications for all 100 applications.</p>
+      <p class="section-desc">Search, filter, and inspect technical specifications for all 100 applications. Click any column header to sort.</p>
 
       <!-- Filter Controls Panel -->
       <div class="controls-panel">
@@ -1346,19 +1374,31 @@
         </div>
       </div>
 
-      <!-- Data Table -->
+      <!-- Data Table with Sticky Header & Column Sorting -->
       <div class="table-frame">
         <table class="data-table">
           <thead>
             <tr>
-              <th style="width: 45px;">#</th>
-              <th style="width: 160px;">Application</th>
+              <th style="width: 50px;" onclick="handleSort('id')">
+                # <span class="sort-indicator" id="sort-id">&#8645;</span>
+              </th>
+              <th style="width: 160px;" onclick="handleSort('name')">
+                Application <span class="sort-indicator" id="sort-name">&#8645;</span>
+              </th>
               <th style="width: 290px;">Description</th>
-              <th style="width: 140px;">Primary Auth</th>
-              <th style="width: 110px;">Access Gate</th>
+              <th style="width: 140px;" onclick="handleSort('primary_auth')">
+                Primary Auth <span class="sort-indicator" id="sort-primary_auth">&#8645;</span>
+              </th>
+              <th style="width: 110px;" onclick="handleSort('access_model')">
+                Access Gate <span class="sort-indicator" id="sort-access_model">&#8645;</span>
+              </th>
               <th style="width: 120px;">API Surface</th>
-              <th style="width: 100px;">Buildability</th>
-              <th style="width: 140px;">MCP Status</th>
+              <th style="width: 100px;" onclick="handleSort('buildability')">
+                Buildability <span class="sort-indicator" id="sort-buildability">&#8645;</span>
+              </th>
+              <th style="width: 140px;" onclick="handleSort('mcp_status')">
+                MCP Status <span class="sort-indicator" id="sort-mcp_status">&#8645;</span>
+              </th>
               <th style="width: 75px;">Docs</th>
             </tr>
           </thead>
@@ -1542,10 +1582,10 @@
 
   </main>
 
-  <!-- Modal Dialog -->
+  <!-- Modal Dialog with Escape Key Listener -->
   <div id="detailModal" class="modal-overlay" onclick="closeModal(event)">
     <div class="modal-dialog" onclick="event.stopPropagation()">
-      <button class="modal-close-btn" onclick="closeModal(event)">&times;</button>
+      <button class="modal-close-btn" onclick="closeModal(event)" aria-label="Close dialog">&times;</button>
       <div id="modalContent"></div>
     </div>
   </div>
@@ -1573,8 +1613,12 @@
     let currentPage = 1;
     let isExpandedAll = false;
 
+    // Sorting State
+    let sortColumn = 'id';
+    let sortDirection = 'asc';
+
     function getFilteredApps() {
-      return rawApps.filter(app => {
+      let list = rawApps.filter(app => {
         if (currentCategory !== 'all' && app.category !== currentCategory) return false;
         if (currentAccess !== 'all' && app.access_model !== currentAccess) return false;
         if (currentBuild !== 'all' && app.buildability !== currentBuild) return false;
@@ -1593,6 +1637,47 @@
         }
         return true;
       });
+
+      // Apply Sort
+      list.sort((a, b) => {
+        let valA = a[sortColumn];
+        let valB = b[sortColumn];
+        if (typeof valA === 'string') {
+          valA = valA.toLowerCase();
+          valB = valB.toLowerCase();
+        }
+        if (valA < valB) return sortDirection === 'asc' ? -1 : 1;
+        if (valA > valB) return sortDirection === 'asc' ? 1 : -1;
+        return 0;
+      });
+
+      return list;
+    }
+
+    function handleSort(col) {
+      if (sortColumn === col) {
+        sortDirection = (sortDirection === 'asc') ? 'desc' : 'asc';
+      } else {
+        sortColumn = col;
+        sortDirection = 'asc';
+      }
+      updateSortIndicators();
+      renderTable();
+    }
+
+    function updateSortIndicators() {
+      ['id', 'name', 'primary_auth', 'access_model', 'buildability', 'mcp_status'].forEach(c => {
+        const el = document.getElementById('sort-' + c);
+        if (el) {
+          if (c === sortColumn) {
+            el.innerHTML = (sortDirection === 'asc') ? '&#9650;' : '&#9660;';
+            el.style.color = 'var(--text-main)';
+          } else {
+            el.innerHTML = '&#8645;';
+            el.style.color = 'var(--text-dim)';
+          }
+        }
+      });
     }
 
     function renderTable() {
@@ -1600,7 +1685,6 @@
       const filtered = getFilteredApps();
       const totalFiltered = filtered.length;
 
-      // Calculate slices
       let displayedApps = [];
       let totalPages = Math.ceil(totalFiltered / batchSize);
       if (totalPages === 0) totalPages = 1;
@@ -1792,6 +1876,13 @@
       document.getElementById('detailModal').classList.remove('open');
     }
 
+    // Escape Key Listener for Accessibility (UI/UX Pro Max)
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeModal();
+      }
+    });
+
     function exportData(format) {
       if (format === 'json') {
         const blob = new Blob([JSON.stringify(rawApps, null, 2)], { type: 'application/json' });
@@ -1826,7 +1917,8 @@
       }
     }
 
-    // Initial render
+    // Initial render & sort indicators
+    updateSortIndicators();
     renderTable();
   </script>
 </body>
