@@ -3,6 +3,7 @@
 generate_html.py
 Builds the standalone, anti-slop, ASD-STE100 compliant single-page case study.
 Applies:
+  - Justified text formatting (text-align: justify; text-justify: inter-word; hyphens: auto;) across all prose, paragraphs, cards, descriptions, and modals.
   - Theme switching: Full Dark and Light mode support with local storage persistence and system preference fallback.
   - tasteskill 2.5: Zero AI-slop gradients (no violet/lavender), quiet micro-interactions, equal edges,
     verb-object button labels, plain factual copy.
@@ -84,7 +85,7 @@ def generate_html():
       --accent-rose: #be123c;
       
       --table-th-bg: #f1f5f9;
-      --code-bg: #0f172a; /* Keep terminal high-contrast slate */
+      --code-bg: #0f172a;
     }}
 
     * {{
@@ -97,7 +98,7 @@ def generate_html():
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background-color: var(--bg-page);
       color: var(--text-main);
-      line-height: 1.5;
+      line-height: 1.55;
       font-size: 14px;
       -webkit-font-smoothing: antialiased;
       transition: background-color 0.2s ease, color 0.2s ease;
@@ -112,6 +113,24 @@ def generate_html():
       max-width: 1280px;
       margin: 0 auto;
       padding: 0 1.5rem;
+    }}
+
+    /* Justified Text Standard across prose */
+    p.hero-text,
+    .section-desc,
+    .finding-card p,
+    .matrix-card p.lead,
+    .division-col ul li,
+    .audit-step-desc,
+    .case-claim,
+    .case-truth,
+    .case-lesson,
+    .field-value,
+    .modal-desc,
+    .col-desc {{
+      text-align: justify;
+      text-justify: inter-word;
+      hyphens: auto;
     }}
 
     /* Header Nav: Quiet, Factual */
@@ -1876,7 +1895,7 @@ def generate_html():
               <div style="font-weight: 600; color: var(--text-main);">${{app.name}}</div>
               <div style="font-size: 0.7rem; color: var(--text-dim);">${{app.category}}</div>
             </td>
-            <td style="color: var(--text-muted); font-size: 0.775rem;">${{app.one_liner}}</td>
+            <td class="col-desc" style="color: var(--text-muted); font-size: 0.775rem;">${{app.one_liner}}</td>
             <td><span style="font-family: var(--font-mono); font-size: 0.75rem;">${{app.primary_auth}}</span></td>
             <td><span class="tag ${{aClass}}">${{app.access_model}}</span></td>
             <td style="font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono);">${{app.api_surface.split(',')[0]}}</td>
@@ -1959,7 +1978,7 @@ def generate_html():
           <div style="font-size: 0.8rem; color: var(--text-muted);">${{app.category}} &bull; ${{app.website}}</div>
         </div>
 
-        <p style="font-size: 0.85rem; color: var(--text-main); margin-bottom: 1.25rem; line-height: 1.5;">${{app.one_liner}}</p>
+        <p class="modal-desc" style="font-size: 0.85rem; color: var(--text-main); margin-bottom: 1.25rem; line-height: 1.55;">${{app.one_liner}}</p>
 
         <div class="modal-grid-2">
           <div>
@@ -2069,7 +2088,7 @@ def generate_html():
 
     with open("index.html", "w", encoding="utf-8") as f:
         f.write(html)
-    print("Wrote index.html with dark and light mode toggle, local persistence, and high contrast styling.")
+    print("Wrote index.html with justified text layout across all sections, cards, modals, and table cells.")
 
 if __name__ == "__main__":
     generate_html()
