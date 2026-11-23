@@ -32,7 +32,7 @@ def generate_html():
     audit_json_str = json.dumps(audit).replace("</script>", "<\\/script>")
 
     html = f"""<!DOCTYPE html>
-<html lang="en" data-type="software" data-radius="sharp" data-theme="dark">
+<html lang="en" data-type="software" data-radius="sharp" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -44,8 +44,30 @@ def generate_html():
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    /* Dark Theme (Default) */
-    :root, html[data-theme="dark"] {{
+    /* Light Theme (Default) */
+    :root, html[data-theme="light"] {{
+      --bg-page: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-surface-active: #f1f5f9;
+      --bg-subtle: #f1f5f9;
+      --border-base: #e2e8f0;
+      --border-strong: #cbd5e1;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-dim: #64748b;
+      
+      --accent-brand: #c2410c; /* Deepened flame for light contrast */
+      --accent-blue: #1d4ed8;
+      --accent-emerald: #047857;
+      --accent-amber: #b45309;
+      --accent-rose: #be123c;
+      
+      --table-th-bg: #f1f5f9;
+      --code-bg: #0f172a;
+    }}
+
+    /* Dark Theme */
+    html[data-theme="dark"] {{
       --bg-page: #0b0d11;
       --bg-surface: #12151c;
       --bg-surface-active: #181c25;
@@ -65,24 +87,6 @@ def generate_html():
       --table-th-bg: #0f1218;
       --code-bg: #07090c;
     }}
-
-    /* Light Theme (High Contrast, Clean Engineering Palette) */
-    html[data-theme="light"] {{
-      --bg-page: #f8fafc;
-      --bg-surface: #ffffff;
-      --bg-surface-active: #f1f5f9;
-      --bg-subtle: #f1f5f9;
-      --border-base: #e2e8f0;
-      --border-strong: #cbd5e1;
-      --text-main: #0f172a;
-      --text-muted: #475569;
-      --text-dim: #64748b;
-      
-      --accent-brand: #c2410c; /* Deepened flame for light contrast */
-      --accent-blue: #1d4ed8;
-      --accent-emerald: #047857;
-      --accent-amber: #b45309;
-      --accent-rose: #be123c;
       
       --table-th-bg: #f1f5f9;
       --code-bg: #0f172a;
@@ -1183,8 +1187,8 @@ def generate_html():
       <div style="display: flex; align-items: center; gap: 0.5rem;">
         <!-- Dark / Light Theme Toggle Button -->
         <button id="themeToggleBtn" class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Toggle dark and light color theme">
-          <span id="themeIcon">&#9728;</span>
-          <span id="themeLabel">Light</span>
+          <span id="themeIcon">&#9790;</span>
+          <span id="themeLabel">Dark</span>
         </button>
         <button class="btn btn-secondary" onclick="exportData('csv')">Download CSV</button>
         <button class="btn btn-secondary" onclick="exportData('json')">Download JSON</button>
@@ -1754,10 +1758,8 @@ def generate_html():
       const savedTheme = localStorage.getItem('composio_theme');
       if (savedTheme) {{
         setTheme(savedTheme);
-      }} else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {{
-        setTheme('light');
       }} else {{
-        setTheme('dark');
+        setTheme('light');
       }}
     }}
 
@@ -1776,8 +1778,8 @@ def generate_html():
     }}
 
     function toggleTheme() {{
-      const current = document.documentElement.getAttribute('data-theme') || 'dark';
-      const target = (current === 'dark') ? 'light' : 'dark';
+      const current = document.documentElement.getAttribute('data-theme') || 'light';
+      const target = (current === 'light') ? 'dark' : 'light';
       setTheme(target);
     }}
 
