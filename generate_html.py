@@ -1,8 +1,14 @@
 #!/usr/bin/env python3
 """
 generate_html.py
-Builds the standalone, production-ready, interactive single-page Case Study & Dashboard.
-Embeds all verified data from data/apps_100.json, data/patterns_summary.json, and data/verification_audit.json.
+Builds the standalone, anti-slop, ASD-STE100 compliant single-page case study.
+Applies tasteskill principles:
+  - No purple/violet AI slop gradients.
+  - High-density, professional engineering layout (Figma / Linear / x.ai design standard).
+  - Clear typography, precise borders, equal margins.
+  - ASD-STE100 Simplified Technical English (short, active, unambiguous sentences).
+  - Batching controls: shows 8-10 rows by default with dropdown (8, 10, 20, 50, All) and expander arrow.
+  - "Showing X of 100" counter located directly beside the top filters.
 Output: index.html
 """
 
@@ -23,31 +29,37 @@ def generate_html():
     audit_json_str = json.dumps(audit).replace("</script>", "<\\/script>")
 
     html = f"""<!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en" data-type="software" data-radius="sharp">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Composio Product Ops Case Study: 100 App Toolkits & Patterns</title>
-  <meta name="description" content="AI Product Ops Take-Home Assignment: Researching 100 Apps for Agent Toolkits, Auth Patterns, Gating Analysis, Verification Loops, and MCP Readiness.">
+  <title>Composio Product Ops: 100 App Toolkits Technical Audit</title>
+  <meta name="description" content="Technical research report and verification audit for 100 software applications. Analyzes authentication methods, access limits, API surfaces, and Model Context Protocol support.">
+  <meta name="page-type" content="software">
+  <meta name="site-kind" content="software">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {{
-      --bg-main: #090d16;
-      --bg-card: #0f172a;
-      --bg-card-hover: #162038;
-      --border-subtle: #1e293b;
-      --border-accent: #334155;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --text-dim: #64748b;
-      --composio-orange: #f97316;
-      --composio-purple: #8b5cf6;
-      --composio-blue: #3b82f6;
-      --composio-emerald: #10b981;
-      --composio-rose: #f43f5e;
-      --composio-amber: #f59e0b;
+      --bg-page: #0b0d11;
+      --bg-surface: #12151c;
+      --bg-surface-active: #181c25;
+      --bg-subtle: #1c222e;
+      --border-base: #232936;
+      --border-strong: #323b4d;
+      --text-main: #f1f3f7;
+      --text-muted: #8b96a8;
+      --text-dim: #5a6475;
+      
+      --accent-brand: #e25822; /* Composio Industrial Flame */
+      --accent-blue: #2563eb;
+      --accent-emerald: #059669;
+      --accent-amber: #d97706;
+      --accent-rose: #e11d48;
+      
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
     }}
 
     * {{
@@ -57,75 +69,65 @@ def generate_html():
     }}
 
     body {{
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background-color: var(--bg-main);
+      font-family: var(--font-sans);
+      background-color: var(--bg-page);
       color: var(--text-main);
-      line-height: 1.55;
-      padding: 0;
+      line-height: 1.5;
+      font-size: 14px;
       -webkit-font-smoothing: antialiased;
     }}
 
     code, pre, .font-mono {{
-      font-family: 'JetBrains Mono', monospace;
+      font-family: var(--font-mono);
     }}
 
-    /* Header Nav */
-    header.sticky-nav {{
+    /* Global Layout Bounds */
+    .wrap {{
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }}
+
+    /* Header Nav: Quiet, Factual */
+    header.top-nav {{
+      border-bottom: 1px solid var(--border-base);
+      background: rgba(11, 13, 17, 0.95);
       position: sticky;
       top: 0;
       z-index: 100;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      background: rgba(9, 13, 22, 0.85);
-      border-bottom: 1px solid var(--border-subtle);
+      backdrop-filter: blur(8px);
     }}
 
-    .nav-container {{
-      max-width: 1360px;
-      margin: 0 auto;
-      padding: 0.85rem 1.5rem;
+    .nav-inner {{
       display: flex;
       justify-content: space-between;
       align-items: center;
+      height: 56px;
       gap: 1rem;
     }}
 
-    .brand-group {{
+    .nav-brand {{
       display: flex;
       align-items: center;
       gap: 0.75rem;
       text-decoration: none;
-      color: white;
+      color: var(--text-main);
+      font-weight: 700;
+      font-size: 0.95rem;
+      letter-spacing: -0.01em;
     }}
 
-    .brand-logo {{
-      width: 32px;
-      height: 32px;
-      background: linear-gradient(135deg, #f97316, #8b5cf6);
-      border-radius: 8px;
+    .brand-mark {{
+      width: 22px;
+      height: 22px;
+      background: var(--accent-brand);
+      border-radius: 4px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 800;
-      font-size: 1.1rem;
-      color: white;
-      box-shadow: 0 0 16px rgba(249, 115, 22, 0.35);
-    }}
-
-    .brand-title {{
-      font-weight: 700;
-      font-size: 1.05rem;
-      letter-spacing: -0.02em;
-    }}
-
-    .brand-badge {{
-      font-size: 0.7rem;
-      background: rgba(249, 115, 22, 0.15);
-      color: #fb923c;
-      padding: 0.2rem 0.55rem;
-      border-radius: 9999px;
-      font-weight: 600;
-      border: 1px solid rgba(249, 115, 22, 0.3);
+      color: #fff;
+      font-size: 13px;
     }}
 
     .nav-links {{
@@ -138,1612 +140,1454 @@ def generate_html():
     .nav-links a {{
       color: var(--text-muted);
       text-decoration: none;
-      font-size: 0.875rem;
+      font-size: 0.825rem;
       font-weight: 500;
-      transition: color 0.15s ease;
+      transition: color 0.1s;
     }}
 
     .nav-links a:hover {{
       color: var(--text-main);
     }}
 
-    .nav-btn {{
-      background: linear-gradient(135deg, #f97316, #ea580c);
-      color: white;
-      padding: 0.45rem 0.95rem;
-      border-radius: 7px;
-      font-size: 0.825rem;
-      font-weight: 600;
-      text-decoration: none;
+    .btn {{
       display: inline-flex;
       align-items: center;
       gap: 0.4rem;
-      transition: opacity 0.2s;
+      padding: 0.45rem 0.85rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      text-decoration: none;
+      transition: background 0.15s, border-color 0.15s;
     }}
 
-    .nav-btn:hover {{
-      opacity: 0.9;
+    .btn-primary {{
+      background: var(--text-main);
+      color: var(--bg-page);
+    }}
+
+    .btn-primary:hover {{
+      background: #e2e8f0;
+    }}
+
+    .btn-secondary {{
+      background: var(--bg-surface);
+      border-color: var(--border-base);
+      color: var(--text-muted);
+    }}
+
+    .btn-secondary:hover {{
+      background: var(--bg-surface-active);
+      color: var(--text-main);
+      border-color: var(--border-strong);
     }}
 
     /* Main Container */
-    .page-container {{
-      max-width: 1360px;
-      margin: 0 auto;
-      padding: 2.5rem 1.5rem 6rem;
+    main {{
+      padding: 2.5rem 0 6rem;
     }}
 
-    /* Hero Headline */
-    .hero {{
-      text-align: left;
-      margin-bottom: 2.5rem;
-      padding-bottom: 2rem;
-      border-bottom: 1px solid var(--border-subtle);
+    /* Section Structure: Crisp & Clean */
+    section.block {{
+      margin-bottom: 3.5rem;
     }}
 
-    .hero-eyebrow {{
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.8rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #fb923c;
-      background: rgba(251, 146, 60, 0.1);
-      padding: 0.3rem 0.75rem;
-      border-radius: 9999px;
-      margin-bottom: 1rem;
-      border: 1px solid rgba(251, 146, 60, 0.25);
-    }}
-
-    .hero-title {{
-      font-size: 2.5rem;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      line-height: 1.15;
-      margin-bottom: 1rem;
-      background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }}
-
-    .hero-subtitle {{
-      font-size: 1.125rem;
-      color: var(--text-muted);
-      max-width: 860px;
-      line-height: 1.6;
-    }}
-
-    /* Metric Cards Grid */
-    .metrics-grid {{
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 1rem;
-      margin-bottom: 2.5rem;
-    }}
-
-    .metric-card {{
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      padding: 1.25rem 1.1rem;
-      position: relative;
-      overflow: hidden;
-      transition: transform 0.2s, border-color 0.2s;
-    }}
-
-    .metric-card:hover {{
-      transform: translateY(-2px);
-      border-color: var(--border-accent);
-    }}
-
-    .metric-card::before {{
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, #f97316, #8b5cf6);
-      opacity: 0.8;
-    }}
-
-    .metric-val {{
-      font-size: 2.25rem;
-      font-weight: 800;
-      letter-spacing: -0.03em;
+    .section-title {{
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
       color: var(--text-main);
-      display: flex;
-      align-items: baseline;
-      gap: 0.3rem;
-      line-height: 1;
-      margin-bottom: 0.4rem;
-    }}
-
-    .metric-val span.sub {{
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: var(--text-dim);
-    }}
-
-    .metric-label {{
-      font-size: 0.825rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
       margin-bottom: 0.25rem;
     }}
 
-    .metric-caption {{
+    .section-desc {{
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+      max-width: 820px;
+    }}
+
+    /* Hero / Summary Block */
+    .hero-panel {{
+      border: 1px solid var(--border-base);
+      background: var(--bg-surface);
+      border-radius: 6px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }}
+
+    .eyebrow {{
+      font-family: var(--font-mono);
+      font-size: 0.725rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-brand);
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      display: block;
+    }}
+
+    h1.hero-heading {{
+      font-size: 2rem;
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.03em;
+      color: var(--text-main);
+      margin-bottom: 1rem;
+      max-width: 900px;
+    }}
+
+    p.hero-text {{
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      max-width: 840px;
+    }}
+
+    /* Stats Ribbon: High Density */
+    .stats-row {{
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1px;
+      background: var(--border-base);
+      border: 1px solid var(--border-base);
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 2.5rem;
+    }}
+
+    @media (max-width: 960px) {{
+      .stats-row {{
+        grid-template-columns: repeat(2, 1fr);
+      }}
+    }}
+
+    .stat-box {{
+      background: var(--bg-surface);
+      padding: 1.2rem 1.25rem;
+    }}
+
+    .stat-number {{
+      font-size: 1.85rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--text-main);
+      line-height: 1;
+      margin-bottom: 0.4rem;
+      font-family: var(--font-mono);
+    }}
+
+    .stat-title {{
       font-size: 0.775rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.2rem;
+    }}
+
+    .stat-sub {{
+      font-size: 0.75rem;
       color: var(--text-dim);
       line-height: 1.35;
     }}
 
-    /* Section Styling */
-    .section-wrap {{
-      margin-bottom: 4rem;
-    }}
-
-    .section-header {{
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      margin-bottom: 1.5rem;
-      padding-bottom: 0.75rem;
-      border-bottom: 1px solid var(--border-subtle);
-      flex-wrap: wrap;
-      gap: 1rem;
-    }}
-
-    .section-title-wrap h2 {{
-      font-size: 1.6rem;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      color: var(--text-main);
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-    }}
-
-    .section-title-wrap p {{
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      margin-top: 0.25rem;
-    }}
-
-    /* Patterns Cards */
-    .patterns-grid {{
+    /* Patterns Grid */
+    .findings-grid {{
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-      gap: 1.25rem;
+      gap: 1rem;
       margin-bottom: 2rem;
     }}
 
-    .pattern-card {{
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      padding: 1.4rem;
-      transition: border-color 0.2s;
-    }}
-
-    .pattern-card:hover {{
-      border-color: var(--border-accent);
-    }}
-
-    .pattern-badge {{
-      display: inline-block;
-      font-size: 0.7rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      padding: 0.2rem 0.5rem;
+    .finding-card {{
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
       border-radius: 6px;
-      margin-bottom: 0.75rem;
-      background: rgba(139, 92, 246, 0.15);
-      color: #a78bfa;
-      border: 1px solid rgba(139, 92, 246, 0.3);
+      padding: 1.25rem;
     }}
 
-    .pattern-card h3 {{
-      font-size: 1.1rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
+    .finding-tag {{
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-base);
+      padding: 0.15rem 0.45rem;
+      border-radius: 3px;
+      margin-bottom: 0.65rem;
+    }}
+
+    .finding-card h3 {{
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
       color: var(--text-main);
     }}
 
-    .pattern-card p {{
-      font-size: 0.875rem;
+    .finding-card p {{
+      font-size: 0.825rem;
       color: var(--text-muted);
       line-height: 1.5;
     }}
 
-    /* Visual Charts & Category Table */
-    .charts-split {{
+    /* Charts Row */
+    .charts-pair {{
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
+      gap: 1rem;
       margin-bottom: 2.5rem;
     }}
 
-    @media (max-width: 900px) {{
-      .charts-split {{
+    @media (max-width: 840px) {{
+      .charts-pair {{
         grid-template-columns: 1fr;
       }}
     }}
 
-    .chart-box {{
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      padding: 1.4rem;
+    .chart-panel {{
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      border-radius: 6px;
+      padding: 1.25rem;
     }}
 
-    .chart-box h4 {{
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: var(--text-main);
-      margin-bottom: 1rem;
+    .chart-header {{
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: baseline;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border-base);
     }}
 
-    .bar-row {{
+    .chart-header h4 {{
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }}
+
+    .chart-header span {{
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      font-family: var(--font-mono);
+    }}
+
+    .chart-row {{
       display: flex;
       align-items: center;
-      margin-bottom: 0.75rem;
-      font-size: 0.825rem;
+      margin-bottom: 0.65rem;
+      font-size: 0.8rem;
     }}
 
-    .bar-label {{
-      width: 140px;
+    .chart-row-label {{
+      width: 150px;
       color: var(--text-muted);
-      font-weight: 500;
+      font-size: 0.775rem;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }}
 
-    .bar-track {{
+    .chart-track {{
       flex: 1;
-      height: 18px;
-      background: rgba(30, 41, 59, 0.6);
-      border-radius: 6px;
+      height: 14px;
+      background: var(--bg-subtle);
+      border-radius: 2px;
       overflow: hidden;
-      position: relative;
       margin: 0 0.75rem;
     }}
 
-    .bar-fill {{
+    .chart-fill {{
       height: 100%;
-      border-radius: 6px;
-      transition: width 0.6s ease-out;
+      background: var(--accent-brand);
+      border-radius: 2px;
     }}
 
-    .bar-val {{
-      width: 45px;
+    .chart-row-val {{
+      width: 40px;
       text-align: right;
-      font-weight: 600;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
       color: var(--text-main);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.8rem;
     }}
 
-    /* Matrix Quadrant */
-    .quadrant-grid {{
+    /* Quadrant / Table of Wins vs Outreach */
+    .matrix-pair {{
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 1.25rem;
-      margin-bottom: 2rem;
+      gap: 1rem;
+      margin-bottom: 2.5rem;
     }}
 
-    @media (max-width: 800px) {{
-      .quadrant-grid {{
+    @media (max-width: 840px) {{
+      .matrix-pair {{
         grid-template-columns: 1fr;
       }}
     }}
 
-    .quadrant-box {{
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      padding: 1.4rem;
+    .matrix-card {{
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      border-radius: 6px;
+      padding: 1.25rem;
     }}
 
-    .quadrant-box.wins {{
-      border-left: 4px solid var(--composio-emerald);
+    .matrix-card.win {{
+      border-left: 3px solid var(--accent-emerald);
     }}
 
-    .quadrant-box.outreach {{
-      border-left: 4px solid var(--composio-rose);
+    .matrix-card.outreach {{
+      border-left: 3px solid var(--accent-rose);
     }}
 
-    .quadrant-title {{
-      font-size: 1.05rem;
-      font-weight: 700;
-      margin-bottom: 0.35rem;
+    .matrix-card h4 {{
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+      color: var(--text-main);
+    }}
+
+    .matrix-card p.lead {{
+      font-size: 0.775rem;
+      color: var(--text-dim);
+      margin-bottom: 0.85rem;
+    }}
+
+    .matrix-list {{
+      list-style: none;
       display: flex;
-      align-items: center;
-      gap: 0.5rem;
+      flex-direction: column;
+      gap: 0.4rem;
     }}
 
-    .quadrant-subtitle {{
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      margin-bottom: 1rem;
-    }}
-
-    .quadrant-item {{
-      background: rgba(15, 23, 42, 0.6);
-      border: 1px solid var(--border-subtle);
-      border-radius: 8px;
-      padding: 0.65rem 0.85rem;
-      margin-bottom: 0.5rem;
+    .matrix-item {{
+      background: var(--bg-subtle);
+      padding: 0.5rem 0.75rem;
+      border-radius: 4px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 0.825rem;
+      font-size: 0.775rem;
     }}
 
-    .quadrant-item .name {{
-      font-weight: 700;
+    .matrix-item .app-name {{
+      font-weight: 600;
       color: var(--text-main);
     }}
 
-    .quadrant-item .note {{
-      color: var(--text-dim);
-      font-size: 0.775rem;
+    .matrix-item .app-detail {{
+      color: var(--text-muted);
+      font-size: 0.725rem;
       text-align: right;
-      max-width: 60%;
     }}
 
     /* Interactive Table Controls */
-    .table-controls {{
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      padding: 1.25rem;
-      margin-bottom: 1.25rem;
+    .controls-panel {{
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      border-radius: 6px 6px 0 0;
+      padding: 1rem 1.25rem;
+      border-bottom: none;
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: 0.85rem;
     }}
 
-    .search-row {{
+    .controls-top {{
       display: flex;
-      gap: 0.75rem;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
       flex-wrap: wrap;
     }}
 
-    .search-input-wrap {{
+    .search-box {{
       flex: 1;
       min-width: 260px;
+      max-width: 480px;
       position: relative;
     }}
 
-    .search-input {{
+    .search-box input {{
       width: 100%;
-      background: var(--bg-main);
-      border: 1px solid var(--border-subtle);
-      border-radius: 8px;
-      padding: 0.65rem 1rem 0.65rem 2.4rem;
-      font-size: 0.875rem;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-base);
+      border-radius: 4px;
+      padding: 0.45rem 0.75rem 0.45rem 2rem;
+      font-size: 0.8rem;
       color: var(--text-main);
       outline: none;
-      transition: border-color 0.2s;
+      font-family: var(--font-sans);
     }}
 
-    .search-input:focus {{
-      border-color: var(--composio-orange);
+    .search-box input:focus {{
+      border-color: var(--accent-brand);
     }}
 
     .search-icon {{
       position: absolute;
-      left: 0.85rem;
+      left: 0.65rem;
       top: 50%;
       transform: translateY(-50%);
       color: var(--text-dim);
+      font-size: 12px;
       pointer-events: none;
     }}
 
-    .filters-row {{
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
+    /* Counter Placed Directly Near Filters */
+    .top-count-badge {{
+      display: inline-flex;
       align-items: center;
+      gap: 0.4rem;
+      font-family: var(--font-mono);
+      font-size: 0.775rem;
+      color: var(--text-main);
+      background: var(--bg-subtle);
+      padding: 0.4rem 0.75rem;
+      border-radius: 4px;
+      border: 1px solid var(--border-base);
+      white-space: nowrap;
     }}
 
-    .filter-label {{
+    .controls-batching {{
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }}
+
+    .batch-select {{
+      background: var(--bg-subtle);
+      color: var(--text-main);
+      border: 1px solid var(--border-base);
+      border-radius: 4px;
+      padding: 0.35rem 0.6rem;
       font-size: 0.775rem;
-      font-weight: 700;
+      outline: none;
+      font-family: var(--font-mono);
+      cursor: pointer;
+    }}
+
+    .batch-select:focus {{
+      border-color: var(--accent-brand);
+    }}
+
+    .filter-pills-wrap {{
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }}
+
+    .pill-label {{
+      font-size: 0.725rem;
       color: var(--text-dim);
+      font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.05em;
       margin-right: 0.25rem;
     }}
 
-    .filter-pill {{
-      background: var(--bg-main);
-      border: 1px solid var(--border-subtle);
+    .pill {{
+      background: transparent;
+      border: 1px solid var(--border-base);
       color: var(--text-muted);
-      padding: 0.35rem 0.7rem;
-      border-radius: 7px;
-      font-size: 0.775rem;
-      font-weight: 600;
+      padding: 0.25rem 0.55rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
       cursor: pointer;
-      transition: all 0.15s ease;
       user-select: none;
+      transition: all 0.1s;
     }}
 
-    .filter-pill:hover {{
+    .pill:hover {{
       color: var(--text-main);
-      border-color: var(--border-accent);
+      border-color: var(--border-strong);
     }}
 
-    .filter-pill.active {{
-      background: rgba(249, 115, 22, 0.15);
-      color: #fb923c;
-      border-color: rgba(249, 115, 22, 0.4);
-    }}
-
-    .export-btns {{
-      display: flex;
-      gap: 0.5rem;
-      margin-left: auto;
-    }}
-
-    .btn-secondary {{
-      background: var(--bg-main);
-      border: 1px solid var(--border-subtle);
-      color: var(--text-muted);
-      padding: 0.4rem 0.75rem;
-      border-radius: 7px;
-      font-size: 0.775rem;
+    .pill.active {{
+      background: var(--bg-subtle);
+      color: var(--text-main);
+      border-color: var(--accent-brand);
       font-weight: 600;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      transition: all 0.15s;
     }}
 
-    .btn-secondary:hover {{
-      color: var(--text-main);
-      border-color: var(--border-accent);
-    }}
-
-    /* Table Styling */
-    .table-container {{
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 12px;
+    /* Table Component */
+    .table-frame {{
+      border: 1px solid var(--border-base);
+      background: var(--bg-surface);
+      border-radius: 0 0 6px 6px;
       overflow-x: auto;
-      margin-bottom: 2rem;
     }}
 
-    table.matrix-table {{
+    table.data-table {{
       width: 100%;
       border-collapse: collapse;
+      font-size: 0.8rem;
       text-align: left;
-      font-size: 0.85rem;
     }}
 
-    table.matrix-table th {{
-      background: rgba(15, 23, 42, 0.9);
-      padding: 0.85rem 1rem;
-      color: var(--text-muted);
-      font-weight: 600;
-      font-size: 0.75rem;
+    table.data-table th {{
+      background: #0f1218;
+      padding: 0.65rem 0.85rem;
+      font-size: 0.725rem;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      border-bottom: 1px solid var(--border-subtle);
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border-base);
+      font-weight: 600;
       white-space: nowrap;
-      user-select: none;
     }}
 
-    table.matrix-table td {{
-      padding: 0.9rem 1rem;
-      border-bottom: 1px solid rgba(30, 41, 59, 0.5);
+    table.data-table td {{
+      padding: 0.75rem 0.85rem;
+      border-bottom: 1px solid var(--border-base);
       vertical-align: middle;
     }}
 
-    table.matrix-table tbody tr {{
-      transition: background 0.15s;
+    table.data-table tbody tr {{
+      transition: background 0.1s;
       cursor: pointer;
     }}
 
-    table.matrix-table tbody tr:hover {{
-      background: var(--bg-card-hover);
+    table.data-table tbody tr:hover {{
+      background: var(--bg-surface-active);
     }}
 
-    /* Badges */
-    .badge {{
-      display: inline-flex;
-      align-items: center;
-      padding: 0.2rem 0.55rem;
-      border-radius: 6px;
-      font-size: 0.725rem;
-      font-weight: 600;
+    table.data-table tbody tr:last-child td {{
+      border-bottom: none;
+    }}
+
+    /* Status Badges */
+    .tag {{
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
       white-space: nowrap;
-      line-height: 1.2;
     }}
 
-    .badge-ready {{
-      background: rgba(16, 185, 129, 0.15);
+    .tag-ready {{
+      background: rgba(5, 150, 105, 0.15);
       color: #34d399;
-      border: 1px solid rgba(16, 185, 129, 0.3);
+      border: 1px solid rgba(5, 150, 105, 0.35);
     }}
 
-    .badge-partial {{
-      background: rgba(245, 158, 11, 0.15);
+    .tag-partial {{
+      background: rgba(217, 119, 6, 0.15);
       color: #fbbf24;
-      border: 1px solid rgba(245, 158, 11, 0.3);
+      border: 1px solid rgba(217, 119, 6, 0.35);
     }}
 
-    .badge-friction {{
-      background: rgba(244, 63, 94, 0.15);
+    .tag-friction {{
+      background: rgba(225, 29, 72, 0.15);
       color: #fb7185;
-      border: 1px solid rgba(244, 63, 94, 0.3);
+      border: 1px solid rgba(225, 29, 72, 0.35);
     }}
 
-    .badge-blocked {{
-      background: rgba(148, 163, 184, 0.15);
+    .tag-blocked {{
+      background: rgba(90, 100, 117, 0.2);
       color: #94a3b8;
-      border: 1px solid rgba(148, 163, 184, 0.3);
+      border: 1px solid rgba(90, 100, 117, 0.4);
     }}
 
-    .badge-selfserve {{
-      background: rgba(59, 130, 246, 0.15);
+    .tag-selfserve {{
+      background: rgba(37, 99, 235, 0.12);
       color: #60a5fa;
-      border: 1px solid rgba(59, 130, 246, 0.3);
+      border: 1px solid rgba(37, 99, 235, 0.3);
     }}
 
-    .badge-paidgated {{
-      background: rgba(245, 158, 11, 0.15);
+    .tag-gated {{
+      background: rgba(225, 29, 72, 0.12);
+      color: #f87171;
+      border: 1px solid rgba(225, 29, 72, 0.3);
+    }}
+
+    .tag-paid {{
+      background: rgba(217, 119, 6, 0.12);
       color: #fbbf24;
-      border: 1px solid rgba(245, 158, 11, 0.3);
+      border: 1px solid rgba(217, 119, 6, 0.3);
     }}
 
-    .badge-partnergated {{
-      background: rgba(244, 63, 94, 0.15);
-      color: #fb7185;
-      border: 1px solid rgba(244, 63, 94, 0.3);
+    .tag-mcp {{
+      background: rgba(226, 88, 34, 0.15);
+      color: #fb923c;
+      border: 1px solid rgba(226, 88, 34, 0.35);
     }}
 
-    .badge-mcp-official {{
-      background: rgba(139, 92, 246, 0.18);
-      color: #c084fc;
-      border: 1px solid rgba(139, 92, 246, 0.35);
-    }}
-
-    .badge-mcp-comm {{
-      background: rgba(168, 85, 247, 0.1);
-      color: #e9d5ff;
-      border: 1px solid rgba(168, 85, 247, 0.25);
-    }}
-
-    .badge-mcp-composio {{
-      background: rgba(249, 115, 22, 0.15);
-      color: #fdba74;
-      border: 1px solid rgba(249, 115, 22, 0.3);
-    }}
-
-    .badge-mcp-none {{
-      background: rgba(71, 85, 105, 0.2);
-      color: #64748b;
-      border: 1px solid rgba(71, 85, 105, 0.3);
-    }}
-
-    .app-title {{
-      font-weight: 700;
-      color: var(--text-main);
+    /* Batch Navigation Toolbar */
+    .batch-toolbar {{
       display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.85rem 1.25rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      border-top: none;
+      border-radius: 0 0 6px 6px;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }}
+
+    .expand-btn {{
+      display: inline-flex;
       align-items: center;
       gap: 0.4rem;
-    }}
-
-    .app-cat {{
-      font-size: 0.75rem;
-      color: var(--text-dim);
-    }}
-
-    .doc-link {{
-      color: #60a5fa;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.3rem;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-base);
+      color: var(--text-main);
+      padding: 0.4rem 0.85rem;
+      border-radius: 4px;
       font-size: 0.775rem;
-      transition: color 0.15s;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
     }}
 
-    .doc-link:hover {{
-      color: #93c5fd;
-      text-decoration: underline;
+    .expand-btn:hover {{
+      background: var(--bg-surface-active);
+      border-color: var(--border-strong);
     }}
 
-    /* Architecture Flow */
-    .agent-pipeline-box {{
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      padding: 1.75rem;
+    .pagination-controls {{
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }}
+
+    .page-btn {{
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-base);
+      color: var(--text-muted);
+      padding: 0.3rem 0.6rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      cursor: pointer;
+    }}
+
+    .page-btn:hover:not(:disabled) {{
+      color: var(--text-main);
+      border-color: var(--border-strong);
+    }}
+
+    .page-btn:disabled {{
+      opacity: 0.4;
+      cursor: not-allowed;
+    }}
+
+    /* Verification Progression */
+    .audit-strip {{
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
       margin-bottom: 2rem;
     }}
 
-    .pipeline-stages {{
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1rem;
-      margin-bottom: 1.75rem;
-      position: relative;
-    }}
-
-    .stage-card {{
-      background: rgba(15, 23, 42, 0.8);
-      border: 1px solid var(--border-subtle);
-      border-radius: 10px;
-      padding: 1.1rem;
-      position: relative;
-    }}
-
-    .stage-num {{
-      font-size: 0.75rem;
-      font-weight: 800;
-      color: #fb923c;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 0.35rem;
-    }}
-
-    .stage-title {{
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: var(--text-main);
-      margin-bottom: 0.4rem;
-    }}
-
-    .stage-desc {{
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      line-height: 1.45;
-    }}
-
-    /* Human vs Agent Split */
-    .split-col-2 {{
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.25rem;
-      margin-top: 1.5rem;
-    }}
-
     @media (max-width: 768px) {{
-      .split-col-2 {{
+      .audit-strip {{
         grid-template-columns: 1fr;
       }}
     }}
 
-    .role-box {{
-      background: rgba(15, 23, 42, 0.5);
-      border: 1px solid var(--border-subtle);
-      border-radius: 10px;
+    .audit-step {{
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      border-radius: 6px;
       padding: 1.25rem;
     }}
 
-    .role-box h4 {{
-      font-size: 0.95rem;
-      font-weight: 700;
-      margin-bottom: 0.75rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+    .audit-step.final {{
+      border-color: var(--accent-emerald);
+      background: rgba(5, 150, 105, 0.04);
     }}
 
-    .role-box ul {{
-      list-style: none;
+    .audit-step-header {{
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.5rem;
+    }}
+
+    .audit-step-title {{
       font-size: 0.825rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }}
+
+    .audit-step-pct {{
+      font-family: var(--font-mono);
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }}
+
+    .audit-step-desc {{
+      font-size: 0.775rem;
       color: var(--text-muted);
+      line-height: 1.45;
+    }}
+
+    /* Hit & Miss Cases */
+    .cases-grid {{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }}
+
+    .case-item {{
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      border-radius: 6px;
+      padding: 1.25rem;
+    }}
+
+    .case-title-row {{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.65rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border-base);
+    }}
+
+    .case-name {{
+      font-weight: 700;
+      color: var(--text-main);
+      font-size: 0.9rem;
+    }}
+
+    .case-claim {{
+      background: rgba(225, 29, 72, 0.08);
+      border: 1px solid rgba(225, 29, 72, 0.25);
+      border-radius: 4px;
+      padding: 0.5rem 0.65rem;
+      font-size: 0.775rem;
+      color: #fda4af;
+      margin-bottom: 0.5rem;
+    }}
+
+    .case-truth {{
+      background: rgba(5, 150, 105, 0.08);
+      border: 1px solid rgba(5, 150, 105, 0.25);
+      border-radius: 4px;
+      padding: 0.5rem 0.65rem;
+      font-size: 0.775rem;
+      color: #6ee7b7;
+      margin-bottom: 0.5rem;
+    }}
+
+    .case-lesson {{
+      font-size: 0.725rem;
+      color: var(--text-dim);
+      line-height: 1.4;
+    }}
+
+    /* Agent vs Human Division */
+    .pipeline-division {{
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }}
+
+    @media (max-width: 768px) {{
+      .pipeline-division {{
+        grid-template-columns: 1fr;
+      }}
+    }}
+
+    .division-col {{
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      border-radius: 6px;
+      padding: 1.25rem;
+    }}
+
+    .division-col h4 {{
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: var(--text-main);
+    }}
+
+    .division-col ul {{
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+    }}
+
+    .division-col ul li {{
+      position: relative;
+      padding-left: 1rem;
+      font-size: 0.775rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }}
+
+    .division-col ul li::before {{
+      content: '–';
+      position: absolute;
+      left: 0;
+      color: var(--text-dim);
+    }}
+
+    /* Code Terminal Box */
+    .code-panel {{
+      background: #07090c;
+      border: 1px solid var(--border-base);
+      border-radius: 6px;
+      padding: 1.25rem;
+      font-family: var(--font-mono);
+      font-size: 0.775rem;
+      color: #e2e8f0;
+      overflow-x: auto;
       line-height: 1.6;
     }}
 
-    .role-box ul li {{
-      position: relative;
-      padding-left: 1.2rem;
-      margin-bottom: 0.4rem;
-    }}
-
-    .role-box ul li::before {{
-      content: '•';
-      position: absolute;
-      left: 0.2rem;
-      color: var(--composio-orange);
-      font-weight: bold;
-    }}
-
-    /* Verification Progression */
-    .accuracy-track {{
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      padding: 1.75rem;
-      margin-bottom: 2rem;
-    }}
-
-    .step-progression {{
-      display: flex;
-      justify-content: space-between;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-      flex-wrap: wrap;
-    }}
-
-    .acc-step {{
-      flex: 1;
-      min-width: 220px;
-      background: rgba(15, 23, 42, 0.7);
-      border: 1px solid var(--border-subtle);
-      border-radius: 10px;
-      padding: 1.25rem;
-    }}
-
-    .acc-step.highlight {{
-      border-color: rgba(16, 185, 129, 0.4);
-      background: rgba(16, 185, 129, 0.05);
-    }}
-
-    .acc-pct {{
-      font-size: 2.25rem;
-      font-weight: 800;
-      font-family: 'JetBrains Mono', monospace;
-      color: var(--text-main);
-      margin-bottom: 0.25rem;
-    }}
-
-    .acc-pct.green {{
-      color: #34d399;
-    }}
-
-    .acc-pct.amber {{
-      color: #fbbf24;
-    }}
-
-    .acc-label {{
-      font-size: 0.825rem;
-      font-weight: 700;
-      color: var(--text-muted);
-      margin-bottom: 0.4rem;
-    }}
-
-    .acc-desc {{
-      font-size: 0.775rem;
+    .code-comment {{
       color: var(--text-dim);
-      line-height: 1.4;
     }}
 
-    /* Hit / Miss Case Studies */
-    .audit-grid {{
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-      gap: 1.25rem;
-    }}
-
-    .audit-card {{
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      padding: 1.25rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.65rem;
-    }}
-
-    .audit-header {{
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid var(--border-subtle);
-      padding-bottom: 0.5rem;
-    }}
-
-    .audit-title {{
-      font-size: 1rem;
-      font-weight: 700;
+    .code-command {{
       color: var(--text-main);
+      font-weight: 600;
     }}
 
-    .audit-claim {{
-      background: rgba(244, 63, 94, 0.08);
-      border: 1px solid rgba(244, 63, 94, 0.2);
-      border-radius: 6px;
-      padding: 0.6rem 0.75rem;
-      font-size: 0.8rem;
-      color: #fda4af;
-    }}
-
-    .audit-truth {{
-      background: rgba(16, 185, 129, 0.08);
-      border: 1px solid rgba(16, 185, 129, 0.2);
-      border-radius: 6px;
-      padding: 0.6rem 0.75rem;
-      font-size: 0.8rem;
-      color: #6ee7b7;
-    }}
-
-    .audit-lesson {{
-      font-size: 0.775rem;
-      color: var(--text-dim);
-      line-height: 1.4;
-      font-style: italic;
-    }}
-
-    /* Modal */
-    .modal-backdrop {{
+    /* Modal Inspection */
+    .modal-overlay {{
       display: none;
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(8px);
+      background: rgba(0, 0, 0, 0.75);
       z-index: 1000;
       align-items: center;
       justify-content: center;
       padding: 1.5rem;
     }}
 
-    .modal-backdrop.open {{
+    .modal-overlay.open {{
       display: flex;
     }}
 
-    .modal-box {{
-      background: #0f172a;
-      border: 1px solid var(--border-accent);
-      border-radius: 14px;
-      max-width: 720px;
+    .modal-dialog {{
+      background: var(--bg-surface);
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
       width: 100%;
+      max-width: 680px;
       max-height: 85vh;
       overflow-y: auto;
-      padding: 2rem;
+      padding: 1.75rem;
       position: relative;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
     }}
 
-    .modal-close {{
+    .modal-close-btn {{
       position: absolute;
-      top: 1.25rem;
-      right: 1.25rem;
+      top: 1rem;
+      right: 1rem;
       background: transparent;
       border: none;
       color: var(--text-muted);
+      font-size: 1.25rem;
       cursor: pointer;
-      font-size: 1.5rem;
       line-height: 1;
     }}
 
-    .modal-close:hover {{
-      color: white;
+    .modal-close-btn:hover {{
+      color: var(--text-main);
     }}
 
-    .modal-field {{
-      margin-bottom: 1.2rem;
+    .modal-grid-2 {{
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1rem 0;
     }}
 
-    .modal-field-title {{
-      font-size: 0.75rem;
+    .field-label {{
+      font-size: 0.7rem;
+      font-family: var(--font-mono);
       text-transform: uppercase;
       letter-spacing: 0.05em;
       color: var(--text-dim);
-      font-weight: 700;
-      margin-bottom: 0.25rem;
+      margin-bottom: 0.2rem;
     }}
 
-    .modal-field-content {{
-      font-size: 0.9rem;
+    .field-value {{
+      font-size: 0.85rem;
       color: var(--text-main);
-      line-height: 1.5;
-    }}
-
-    /* Code Block */
-    .terminal-box {{
-      background: #030712;
-      border: 1px solid var(--border-subtle);
-      border-radius: 10px;
-      padding: 1.25rem;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.825rem;
-      color: #38bdf8;
-      overflow-x: auto;
-      line-height: 1.6;
-    }}
-
-    .terminal-box .cmd {{
-      color: #f8fafc;
-      font-weight: 600;
-    }}
-
-    .terminal-box .comment {{
-      color: #64748b;
     }}
 
     /* Footer */
-    footer {{
-      border-top: 1px solid var(--border-subtle);
-      padding: 2.5rem 1.5rem;
-      text-align: center;
+    footer.page-footer {{
+      border-top: 1px solid var(--border-base);
+      padding: 2.5rem 0;
       color: var(--text-dim);
-      font-size: 0.85rem;
+      font-size: 0.775rem;
+    }}
+
+    .footer-inner {{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
     }}
   </style>
 </head>
 <body>
 
-  <!-- Sticky Top Navigation -->
-  <header class="sticky-nav">
-    <div class="nav-container">
-      <a href="#" class="brand-group">
-        <div class="brand-logo">C</div>
-        <div>
-          <div class="brand-title">Composio Product Ops</div>
-        </div>
-        <span class="brand-badge">Case Study</span>
+  <!-- Top Navigation -->
+  <header class="top-nav">
+    <div class="wrap nav-inner">
+      <a href="#" class="nav-brand">
+        <div class="brand-mark">C</div>
+        <span>Composio Product Ops</span>
       </a>
       <ul class="nav-links">
-        <li><a href="#patterns">Macro Patterns</a></li>
-        <li><a href="#matrix">100 App Matrix</a></li>
-        <li><a href="#agent">Agent Architecture</a></li>
-        <li><a href="#verification">Verification Loops</a></li>
-        <li><a href="#reproduce">Run Agent CLI</a></li>
+        <li><a href="#summary">Findings</a></li>
+        <li><a href="#patterns">Rules</a></li>
+        <li><a href="#matrix">100 Apps</a></li>
+        <li><a href="#pipeline">Agent Architecture</a></li>
+        <li><a href="#verification">Verification</a></li>
+        <li><a href="#cli">Run Agent</a></li>
       </ul>
-      <a href="#matrix" class="nav-btn">
-        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
-        </svg>
-        Explore Matrix
-      </a>
+      <div style="display: flex; gap: 0.5rem;">
+        <button class="btn btn-secondary" onclick="exportData('csv')">CSV</button>
+        <button class="btn btn-secondary" onclick="exportData('json')">JSON</button>
+      </div>
     </div>
   </header>
 
-  <div class="page-container">
+  <main class="wrap">
 
-    <!-- Hero Header -->
-    <section class="hero">
-      <div class="hero-eyebrow">
-        <svg width="12" height="12" fill="currentColor" viewBox="0 0 20 20">
-          <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"/>
-        </svg>
-        AI Product Ops Intern Take-Home Case Study
-      </div>
-      <h1 class="hero-title">100 App Toolkits: Auth, Gating & Patterns</h1>
-      <p class="hero-subtitle">
-        An autonomous agent research pipeline and verification audit profiling 100 SaaS applications across 10 categories. 
-        Designed to identify buildability bottlenecks, model context protocol (MCP) readiness, and auth dynamics for the Composio agent ecosystem.
-      </p>
-    </section>
-
-    <!-- Key Metrics Ribbon -->
-    <div class="metrics-grid">
-      <div class="metric-card">
-        <div class="metric-val">100 <span class="sub">Apps</span></div>
-        <div class="metric-label">Profiled Dataset</div>
-        <div class="metric-caption">10 distinct B2B & developer categories analyzed.</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-val">73<span class="sub">%</span></div>
-        <div class="metric-label">Self-Serve Rate</div>
-        <div class="metric-caption">Zero sales friction; credentials obtainable in &lt;5 mins.</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-val">82<span class="sub">%</span></div>
-        <div class="metric-label">Agent-Ready Today</div>
-        <div class="metric-caption">Public documented REST/GraphQL with active write scopes.</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-val">26<span class="sub">%</span></div>
-        <div class="metric-label">Native MCP Ready</div>
-        <div class="metric-caption">Official or native Model Context Protocol servers exist.</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-val" style="color: #34d399;">+17<span class="sub">%</span></div>
-        <div class="metric-label">Verification Gain</div>
-        <div class="metric-caption">Accuracy advanced from 70% (Pass 1) to 87% (Pass 2) to 100% (Human).</div>
-      </div>
-    </div>
-
-    <!-- Section 1: Executive Macro Patterns -->
-    <section id="patterns" class="section-wrap">
-      <div class="section-header">
-        <div class="section-title-wrap">
-          <h2>
-            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #f97316;">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-            </svg>
-            Headline Patterns: Insight Over Raw Table
-          </h2>
-          <p>The 5 fundamental architectural trends shaping tool calling across the 100 apps.</p>
-        </div>
+    <!-- Hero / Summary Panel -->
+    <section id="summary" class="block">
+      <div class="hero-panel">
+        <span class="eyebrow">Technical Audit &bull; 100 Applications</span>
+        <h1 class="hero-heading">100 App Toolkits: Auth Methods, Gating, and MCP Readiness</h1>
+        <p class="hero-text">
+          An automated research agent analyzed 100 applications across 10 categories. 
+          The agent verified authentication types, developer access gates, API structures, and Model Context Protocol support. 
+          This report presents the findings, pattern rules, and verification results.
+        </p>
       </div>
 
-      <div class="patterns-grid">
-        <div class="pattern-card">
-          <span class="pattern-badge">Pattern 1: Auth Dominance</span>
-          <h3>Auth Polarization: Bearer Tokens vs OAuth2</h3>
-          <p>
-            <strong>59% of tools</strong> utilize static API Keys or Bearer Tokens (concentrated heavily in Developer Infrastructure, Data/Scraping, and modern AI APIs), enabling zero-click invocation for agents. 
-            Conversely, <strong>33% mandate OAuth2</strong>—predominantly multi-tenant collaborative SaaS (CRMs, Helpdesks, and Ad networks) where customer data segregation and user approval flows require managed token exchanges.
-          </p>
+      <!-- Top Factual Metrics -->
+      <div class="stats-row">
+        <div class="stat-box">
+          <div class="stat-number">100</div>
+          <div class="stat-title">Applications</div>
+          <div class="stat-sub">10 enterprise categories</div>
         </div>
-
-        <div class="pattern-card">
-          <span class="pattern-badge">Pattern 2: Access Barrier</span>
-          <h3>73% Self-Serve Accessibility vs 27% Gated Moats</h3>
-          <p>
-            Nearly three-quarters of the catalog (73 apps) offer instant self-serve sandboxes or free plans with immediate API access. 
-            The remaining 27% split into <strong>12% Paid-Gated</strong> (card/subscription required, e.g. Aircall, GoHighLevel, SE Ranking) and <strong>15% Partner-Gated</strong> (enterprise sales calls, Intapp DealCloud, PitchBook, or corporate underwriting like Ramp/Brex).
-          </p>
+        <div class="stat-box">
+          <div class="stat-number">73%</div>
+          <div class="stat-title">Self-Serve</div>
+          <div class="stat-sub">Instant developer keys</div>
         </div>
-
-        <div class="pattern-card">
-          <span class="pattern-badge">Pattern 3: Primary Blocker</span>
-          <h3>Enterprise Sales & App Review as the #1 Blocker</h3>
-          <p>
-            The hardest blocker for agent adoption is not API design, but organizational gating: 
-            <strong>Salesforce Commerce Cloud, DealCloud, Waterfall.io, and PitchBook</strong> completely restrict public sandboxes behind 5-figure enterprise contracts, while <strong>Meta, Google Ads, and LinkedIn</strong> lock production write permissions behind rigorous legal App Reviews.
-          </p>
+        <div class="stat-box">
+          <div class="stat-number">82%</div>
+          <div class="stat-title">Ready Today</div>
+          <div class="stat-sub">Documented write APIs</div>
         </div>
-
-        <div class="pattern-card">
-          <span class="pattern-badge">Pattern 4: Protocol Shift</span>
-          <h3>The Model Context Protocol (MCP) Wave (26%)</h3>
-          <p>
-            Over a quarter of surveyed apps (including cutting-edge tools like Devin, Consensus, TranscriptAPI, Otter, Firecrawl, Supabase, GitHub, and Sentry) already provide native or official MCP servers. 
-            This validates Composio's strategic roadmap: apps are converting from raw HTTP endpoints directly into agent-callable schemas.
-          </p>
+        <div class="stat-box">
+          <div class="stat-number">26%</div>
+          <div class="stat-title">Native MCP</div>
+          <div class="stat-sub">Official server available</div>
         </div>
-
-        <div class="pattern-card">
-          <span class="pattern-badge">Pattern 5: Execution Edge</span>
-          <h3>The CLI & Local Fallback (2%)</h3>
-          <p>
-            Crucial OSINT and diagramming tools like <strong>Sherlock</strong> and <strong>Mermaid CLI</strong> do not expose any cloud REST endpoints. 
-            For an agent framework, supporting local sub-process execution, container sandboxes, or local CLI MCP wrappers is mandatory to achieve full workflow completion.
-          </p>
-        </div>
-
-        <div class="pattern-card">
-          <span class="pattern-badge">Pattern 6: Consumer Silos</span>
-          <h3>UI-Only Hallucinations (NotebookLM)</h3>
-          <p>
-            Popular consumer AI products (such as Google NotebookLM) have zero developer APIs despite public interest. 
-            Agents attempting to interface with them must either bypass via browser automation (DevTools CDP) or fall back to underlying infrastructure (Google Vertex AI / Gemini Document Grounding API).
-          </p>
-        </div>
-      </div>
-
-      <!-- Charts & Visual Scorecards -->
-      <div class="charts-split">
-        <div class="chart-box">
-          <h4>
-            <span>Primary Auth Distribution</span>
-            <span style="font-size: 0.75rem; color: var(--text-dim); font-weight: normal;">100 Apps</span>
-          </h4>
-          <div class="bar-row">
-            <div class="bar-label">API Key / Bearer</div>
-            <div class="bar-track">
-              <div class="bar-fill" style="width: 59%; background: linear-gradient(90deg, #3b82f6, #60a5fa);"></div>
-            </div>
-            <div class="bar-val">59%</div>
-          </div>
-          <div class="bar-row">
-            <div class="bar-label">OAuth2</div>
-            <div class="bar-track">
-              <div class="bar-fill" style="width: 33%; background: linear-gradient(90deg, #8b5cf6, #a78bfa);"></div>
-            </div>
-            <div class="bar-val">33%</div>
-          </div>
-          <div class="bar-row">
-            <div class="bar-label">HTTP Basic</div>
-            <div class="bar-track">
-              <div class="bar-fill" style="width: 3%; background: linear-gradient(90deg, #f59e0b, #fbbf24);"></div>
-            </div>
-            <div class="bar-val">3%</div>
-          </div>
-          <div class="bar-row">
-            <div class="bar-label">CLI / Local / No Auth</div>
-            <div class="bar-track">
-              <div class="bar-fill" style="width: 3%; background: linear-gradient(90deg, #10b981, #34d399);"></div>
-            </div>
-            <div class="bar-val">3%</div>
-          </div>
-          <div class="bar-row">
-            <div class="bar-label">Custom / Header / HMAC</div>
-            <div class="bar-track">
-              <div class="bar-fill" style="width: 2%; background: linear-gradient(90deg, #f43f5e, #fb7185);"></div>
-            </div>
-            <div class="bar-val">2%</div>
-          </div>
-        </div>
-
-        <div class="chart-box">
-          <h4>
-            <span>Access Model Breakdown</span>
-            <span style="font-size: 0.75rem; color: var(--text-dim); font-weight: normal;">Gating Reality</span>
-          </h4>
-          <div class="bar-row">
-            <div class="bar-label">Self-Serve (Free/Trial)</div>
-            <div class="bar-track">
-              <div class="bar-fill" style="width: 73%; background: linear-gradient(90deg, #10b981, #34d399);"></div>
-            </div>
-            <div class="bar-val">73%</div>
-          </div>
-          <div class="bar-row">
-            <div class="bar-label">Partner / Sales Gated</div>
-            <div class="bar-track">
-              <div class="bar-fill" style="width: 15%; background: linear-gradient(90deg, #f43f5e, #fb7185);"></div>
-            </div>
-            <div class="bar-val">15%</div>
-          </div>
-          <div class="bar-row">
-            <div class="bar-label">Paid Plan Gated</div>
-            <div class="bar-track">
-              <div class="bar-fill" style="width: 12%; background: linear-gradient(90deg, #f59e0b, #fbbf24);"></div>
-            </div>
-            <div class="bar-val">12%</div>
-          </div>
-          <div class="bar-row" style="margin-top: 1rem; padding-top: 0.75rem; border-top: 1px dashed var(--border-subtle);">
-            <div class="bar-label" style="font-weight: 700; color: var(--text-main);">Agent Buildability</div>
-            <div class="bar-track">
-              <div class="bar-fill" style="width: 82%; background: linear-gradient(90deg, #f97316, #fb923c);"></div>
-            </div>
-            <div class="bar-val">82% Ready</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Easy Wins vs Outreach Matrix -->
-      <div class="quadrant-grid">
-        <div class="quadrant-box wins">
-          <div class="quadrant-title" style="color: #34d399;">
-            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
-            </svg>
-            Easy Wins: Instant Autonomous Toolkits
-          </div>
-          <div class="quadrant-subtitle">Zero onboarding friction, instant tokens, high composability, and active MCP support.</div>
-          <div class="quadrant-item">
-            <div><span class="name">GitHub</span> <span style="color: var(--text-dim); font-size: 0.75rem;">(Dev Infra)</span></div>
-            <div class="note">Universal PATs, 5k req/hr, official MCP</div>
-          </div>
-          <div class="quadrant-item">
-            <div><span class="name">Firecrawl</span> <span style="color: var(--text-dim); font-size: 0.75rem;">(Scraping)</span></div>
-            <div class="note">500 free credits, markdown output, official MCP</div>
-          </div>
-          <div class="quadrant-item">
-            <div><span class="name">Supabase</span> <span style="color: var(--text-dim); font-size: 0.75rem;">(Dev Infra)</span></div>
-            <div class="note">Instant Postgres DB, PostgREST + pgvector, official MCP</div>
-          </div>
-          <div class="quadrant-item">
-            <div><span class="name">Notion</span> <span style="color: var(--text-dim); font-size: 0.75rem;">(Productivity)</span></div>
-            <div class="note">30-sec internal integration secret, official MCP</div>
-          </div>
-          <div class="quadrant-item">
-            <div><span class="name">Stripe</span> <span style="color: var(--text-dim); font-size: 0.75rem;">(Fintech)</span></div>
-            <div class="note">Instant test mode keys, official agent toolkit</div>
-          </div>
-          <div class="quadrant-item">
-            <div><span class="name">Consensus</span> <span style="color: var(--text-dim); font-size: 0.75rem;">(AI/Media)</span></div>
-            <div class="note">Instant API key + official MCP with OAuth PKCE</div>
-          </div>
-        </div>
-
-        <div class="quadrant-box outreach">
-          <div class="quadrant-title" style="color: #fb7185;">
-            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-            </svg>
-            Outreach Required: Commercial & Contract Gates
-          </div>
-          <div class="quadrant-subtitle">Requires human partner agreements, sales calls, or corporate entity verification.</div>
-          <div class="quadrant-item">
-            <div><span class="name">PitchBook</span> <span style="color: var(--text-dim); font-size: 0.75rem;">(Fintech)</span></div>
-            <div class="note">$20k+/yr contract, no self-serve, enterprise demo only</div>
-          </div>
-          <div class="quadrant-item">
-            <div><span class="name">DealCloud</span> <span style="color: var(--text-dim); font-size: 0.75rem;">(CRM)</span></div>
-            <div class="note">Intapp client contract required, per-tenant provisioning</div>
-          </div>
-          <div class="quadrant-item">
-            <div><span class="name">Meta Ads</span> <span style="color: var(--text-dim); font-size: 0.75rem;">(Marketing)</span></div>
-            <div class="note">Meta App Review & Business Manager corporate verification</div>
-          </div>
-          <div class="quadrant-item">
-            <div><span class="name">Salesforce Commerce</span> <span style="color: var(--text-dim); font-size: 0.75rem;">(Ecommerce)</span></div>
-            <div class="note">Account Manager contract gate; Demandware stack</div>
-          </div>
-          <div class="quadrant-item">
-            <div><span class="name">Waterfall.io</span> <span style="color: var(--text-dim); font-size: 0.75rem;">(Data)</span></div>
-            <div class="note">Enterprise B2B data vendor; sales demo required</div>
-          </div>
-          <div class="quadrant-item">
-            <div><span class="name">NotebookLM</span> <span style="color: var(--text-dim); font-size: 0.75rem;">(AI/Media)</span></div>
-            <div class="note">UI-only consumer app; fallback to Google Vertex AI</div>
-          </div>
+        <div class="stat-box">
+          <div class="stat-number" style="color: #34d399;">+17%</div>
+          <div class="stat-title">Verification Gain</div>
+          <div class="stat-sub">70% Pass 1 to 87% Pass 2</div>
         </div>
       </div>
     </section>
 
-    <!-- Section 2: Interactive Matrix Table -->
-    <section id="matrix" class="section-wrap">
-      <div class="section-header">
-        <div class="section-title-wrap">
-          <h2>
-            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #3b82f6;">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
-            </svg>
-            100 App Findings Matrix
-          </h2>
-          <p>Search, filter, and inspect detailed auth, gating, API surface, and buildability data for all 100 apps.</p>
+    <!-- Macro Patterns / Rules -->
+    <section id="patterns" class="block">
+      <h2 class="section-title">Macro Patterns and Technical Rules</h2>
+      <p class="section-desc">Six factual rules derived from clustering the 100 applications.</p>
+
+      <div class="findings-grid">
+        <div class="finding-card">
+          <span class="finding-tag">Rule 1: Authentication</span>
+          <h3>Bearer Tokens Dominate Infrastructure; OAuth2 Dominates Collaboration</h3>
+          <p>
+            59 tools use static API keys or Bearer tokens. These permit automated agent calls without user redirection. 
+            33 tools require OAuth2. These are collaborative CRMs, Helpdesks, and Ad networks that require tenant scoping.
+          </p>
         </div>
-        <div class="export-btns">
-          <button class="btn-secondary" onclick="exportData('csv')">
-            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-            </svg>
-            Download CSV
-          </button>
-          <button class="btn-secondary" onclick="exportData('json')">
-            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
-            </svg>
-            Download JSON
-          </button>
+
+        <div class="finding-card">
+          <span class="finding-tag">Rule 2: Access Gating</span>
+          <h3>73% of Tools Provide Free Self-Serve Keys</h3>
+          <p>
+            73 applications permit instant registration with immediate API keys. 
+            12 applications require a paid subscription. 
+            15 applications require a contact-sales meeting or partner agreement.
+          </p>
+        </div>
+
+        <div class="finding-card">
+          <span class="finding-tag">Rule 3: Enterprise Blocks</span>
+          <h3>Sales Gates and App Reviews Are the Primary Blockers</h3>
+          <p>
+            Technical blockers are rarely missing endpoints. 
+            PitchBook, DealCloud, and Waterfall.io block access behind 5-figure enterprise contracts. 
+            Meta Ads, Google Ads, and LinkedIn Ads require corporate business verification.
+          </p>
+        </div>
+
+        <div class="finding-card">
+          <span class="finding-tag">Rule 4: Protocol Shift</span>
+          <h3>26% of Applications Already Support Model Context Protocol</h3>
+          <p>
+            26 applications support MCP directly. 
+            This includes Devin, Consensus, TranscriptAPI, Otter, Firecrawl, Supabase, GitHub, and Sentry. 
+            Developers are publishing agent-native protocols alongside standard REST APIs.
+          </p>
+        </div>
+
+        <div class="finding-card">
+          <span class="finding-tag">Rule 5: Local Execution</span>
+          <h3>Local CLI Tools Require Container Runtimes</h3>
+          <p>
+            Sherlock and Mermaid CLI do not expose cloud REST APIs. 
+            An agent framework must support local container execution to run open-source command-line tools.
+          </p>
+        </div>
+
+        <div class="finding-card">
+          <span class="finding-tag">Rule 6: Closed Silos</span>
+          <h3>Consumer AI Interfaces Often Lack Public APIs</h3>
+          <p>
+            Google NotebookLM has no public developer API. 
+            Agents cannot call NotebookLM directly. Agents must use Google Cloud Vertex AI to access underlying models.
+          </p>
         </div>
       </div>
 
-      <!-- Controls -->
-      <div class="table-controls">
-        <div class="search-row">
-          <div class="search-input-wrap">
-            <svg class="search-icon" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-            </svg>
-            <input type="text" id="searchInput" class="search-input" placeholder="Search by app name, description, auth, category, blocker...">
+      <!-- Charts -->
+      <div class="charts-pair">
+        <div class="chart-panel">
+          <div class="chart-header">
+            <h4>Primary Authentication Distribution</h4>
+            <span>100 Tools</span>
+          </div>
+          <div class="chart-row">
+            <div class="chart-row-label">API Key / Bearer</div>
+            <div class="chart-track"><div class="chart-fill" style="width: 59%;"></div></div>
+            <div class="chart-row-val">59%</div>
+          </div>
+          <div class="chart-row">
+            <div class="chart-row-label">OAuth2</div>
+            <div class="chart-track"><div class="chart-fill" style="width: 33%; background: #3b82f6;"></div></div>
+            <div class="chart-row-val">33%</div>
+          </div>
+          <div class="chart-row">
+            <div class="chart-row-label">HTTP Basic</div>
+            <div class="chart-track"><div class="chart-fill" style="width: 3%; background: #d97706;"></div></div>
+            <div class="chart-row-val">3%</div>
+          </div>
+          <div class="chart-row">
+            <div class="chart-row-label">CLI / Local / No Auth</div>
+            <div class="chart-track"><div class="chart-fill" style="width: 3%; background: #059669;"></div></div>
+            <div class="chart-row-val">3%</div>
+          </div>
+          <div class="chart-row">
+            <div class="chart-row-label">Custom / HMAC</div>
+            <div class="chart-track"><div class="chart-fill" style="width: 2%; background: #e11d48;"></div></div>
+            <div class="chart-row-val">2%</div>
           </div>
         </div>
 
-        <div class="filters-row">
-          <span class="filter-label">Category:</span>
-          <div class="filter-pill active" onclick="setCategoryFilter('all', this)">All (100)</div>
-          <div class="filter-pill" onclick="setCategoryFilter('CRM and Sales', this)">CRM</div>
-          <div class="filter-pill" onclick="setCategoryFilter('Support and Helpdesk', this)">Helpdesk</div>
-          <div class="filter-pill" onclick="setCategoryFilter('Communications and Messaging', this)">Messaging</div>
-          <div class="filter-pill" onclick="setCategoryFilter('Marketing, Ads, Email and Social', this)">Marketing</div>
-          <div class="filter-pill" onclick="setCategoryFilter('Ecommerce', this)">Ecommerce</div>
-          <div class="filter-pill" onclick="setCategoryFilter('Data, SEO and Scraping', this)">Data/SEO</div>
-          <div class="filter-pill" onclick="setCategoryFilter('Developer, Infra and Data platforms', this)">Dev Infra</div>
-          <div class="filter-pill" onclick="setCategoryFilter('Productivity and Project Management', this)">Productivity</div>
-          <div class="filter-pill" onclick="setCategoryFilter('Finance and Fintech', this)">Fintech</div>
-          <div class="filter-pill" onclick="setCategoryFilter('AI, Research and Media-native', this)">AI/Media</div>
-        </div>
-
-        <div class="filters-row" style="padding-top: 0.5rem; border-top: 1px solid rgba(30, 41, 59, 0.4);">
-          <span class="filter-label">Access Gate:</span>
-          <div class="filter-pill active" onclick="setAccessFilter('all', this)">All</div>
-          <div class="filter-pill" onclick="setAccessFilter('Self-Serve', this)">Self-Serve</div>
-          <div class="filter-pill" onclick="setAccessFilter('Paid Gated', this)">Paid Gated</div>
-          <div class="filter-pill" onclick="setAccessFilter('Partner Gated', this)">Partner Gated</div>
-
-          <span class="filter-label" style="margin-left: 1rem;">Buildability:</span>
-          <div class="filter-pill active" onclick="setBuildFilter('all', this)">All</div>
-          <div class="filter-pill" onclick="setBuildFilter('Ready', this)">Ready</div>
-          <div class="filter-pill" onclick="setBuildFilter('Partial', this)">Partial</div>
-          <div class="filter-pill" onclick="setBuildFilter('High Friction', this)">High Friction</div>
-          <div class="filter-pill" onclick="setBuildFilter('Blocked', this)">Blocked</div>
-
-          <span class="filter-label" style="margin-left: 1rem;">MCP Status:</span>
-          <div class="filter-pill active" onclick="setMcpFilter('all', this)">All</div>
-          <div class="filter-pill" onclick="setMcpFilter('Official', this)">Official MCP</div>
-          <div class="filter-pill" onclick="setMcpFilter('Composio', this)">Composio Supported</div>
+        <div class="chart-panel">
+          <div class="chart-header">
+            <h4>Access Model Distribution</h4>
+            <span>Gating Types</span>
+          </div>
+          <div class="chart-row">
+            <div class="chart-row-label">Self-Serve (Free / Trial)</div>
+            <div class="chart-track"><div class="chart-fill" style="width: 73%; background: #059669;"></div></div>
+            <div class="chart-row-val">73%</div>
+          </div>
+          <div class="chart-row">
+            <div class="chart-row-label">Partner / Sales Gate</div>
+            <div class="chart-track"><div class="chart-fill" style="width: 15%; background: #e11d48;"></div></div>
+            <div class="chart-row-val">15%</div>
+          </div>
+          <div class="chart-row">
+            <div class="chart-row-label">Paid Plan Gate</div>
+            <div class="chart-track"><div class="chart-fill" style="width: 12%; background: #d97706;"></div></div>
+            <div class="chart-row-val">12%</div>
+          </div>
+          <div class="chart-row" style="margin-top: 1rem; padding-top: 0.5rem; border-top: 1px dashed var(--border-base);">
+            <div class="chart-row-label" style="font-weight: 600; color: var(--text-main);">Agent Buildability</div>
+            <div class="chart-track"><div class="chart-fill" style="width: 82%;"></div></div>
+            <div class="chart-row-val">82% Ready</div>
+          </div>
         </div>
       </div>
 
-      <!-- Table View -->
-      <div class="table-container">
-        <table class="matrix-table" id="appsTable">
+      <!-- Easy Wins vs Outreach -->
+      <div class="matrix-pair">
+        <div class="matrix-card win">
+          <h4>Easy Wins (Build Immediately)</h4>
+          <p class="lead">Instant tokens, published schemas, zero sales contact.</p>
+          <ul class="matrix-list">
+            <li class="matrix-item">
+              <span class="app-name">GitHub</span>
+              <span class="app-detail">Universal PAT &bull; Official MCP</span>
+            </li>
+            <li class="matrix-item">
+              <span class="app-name">Firecrawl</span>
+              <span class="app-detail">Free tier &bull; LLM markdown &bull; Official MCP</span>
+            </li>
+            <li class="matrix-item">
+              <span class="app-name">Supabase</span>
+              <span class="app-detail">Instant Postgres &bull; PostgREST &bull; Official MCP</span>
+            </li>
+            <li class="matrix-item">
+              <span class="app-name">Notion</span>
+              <span class="app-detail">Instant integration secret &bull; Official MCP</span>
+            </li>
+            <li class="matrix-item">
+              <span class="app-name">Stripe</span>
+              <span class="app-detail">Instant sandbox keys &bull; Official Agent Toolkit</span>
+            </li>
+            <li class="matrix-item">
+              <span class="app-name">Consensus</span>
+              <span class="app-detail">Instant API key &bull; Official MCP with OAuth PKCE</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="matrix-card outreach">
+          <h4>Outreach Required (Enterprise Gated)</h4>
+          <p class="lead">Requires sales calls, business verification, or enterprise contracts.</p>
+          <ul class="matrix-list">
+            <li class="matrix-item">
+              <span class="app-name">PitchBook</span>
+              <span class="app-detail">$20,000+/year contract &bull; No public trial</span>
+            </li>
+            <li class="matrix-item">
+              <span class="app-name">DealCloud</span>
+              <span class="app-detail">Intapp client agreement &bull; Dedicated tenant</span>
+            </li>
+            <li class="matrix-item">
+              <span class="app-name">Meta Ads</span>
+              <span class="app-detail">App Review &bull; Legal entity verification</span>
+            </li>
+            <li class="matrix-item">
+              <span class="app-name">Salesforce Commerce</span>
+              <span class="app-detail">Account Manager contract &bull; SCAPI</span>
+            </li>
+            <li class="matrix-item">
+              <span class="app-name">Waterfall.io</span>
+              <span class="app-detail">B2B vendor agreement &bull; Sales demo</span>
+            </li>
+            <li class="matrix-item">
+              <span class="app-name">NotebookLM</span>
+              <span class="app-detail">UI-only product &bull; Use Google Vertex AI</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section: 100 App Findings Matrix -->
+    <section id="matrix" class="block">
+      <h2 class="section-title">100 Application Findings Matrix</h2>
+      <p class="section-desc">Search, filter, and inspect technical specifications for all 100 applications.</p>
+
+      <!-- Filter Controls Panel -->
+      <div class="controls-panel">
+        <div class="controls-top">
+          <!-- Search input -->
+          <div class="search-box">
+            <span class="search-icon">&#128269;</span>
+            <input type="text" id="searchInput" placeholder="Filter by application name, category, auth, or blocker...">
+          </div>
+
+          <!-- Counter Placed Directly Beside Controls -->
+          <div class="top-count-badge" id="topCountDisplay">
+            Showing 1–10 of 100 applications
+          </div>
+
+          <!-- Batching Dropdown Selector -->
+          <div class="controls-batching">
+            <span>Show:</span>
+            <select id="batchSelect" class="batch-select" onchange="handleBatchSizeChange(this.value)">
+              <option value="8">8 rows</option>
+              <option value="10" selected>10 rows</option>
+              <option value="20">20 rows</option>
+              <option value="50">50 rows</option>
+              <option value="100">All 100 rows</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Filter Pills -->
+        <div class="filter-pills-wrap">
+          <span class="pill-label">Category:</span>
+          <button class="pill active" onclick="setCategory('all', this)">All (100)</button>
+          <button class="pill" onclick="setCategory('CRM and Sales', this)">CRM</button>
+          <button class="pill" onclick="setCategory('Support and Helpdesk', this)">Helpdesk</button>
+          <button class="pill" onclick="setCategory('Communications and Messaging', this)">Messaging</button>
+          <button class="pill" onclick="setCategory('Marketing, Ads, Email and Social', this)">Marketing</button>
+          <button class="pill" onclick="setCategory('Ecommerce', this)">Ecommerce</button>
+          <button class="pill" onclick="setCategory('Data, SEO and Scraping', this)">Data / SEO</button>
+          <button class="pill" onclick="setCategory('Developer, Infra and Data platforms', this)">Dev Infra</button>
+          <button class="pill" onclick="setCategory('Productivity and Project Management', this)">Productivity</button>
+          <button class="pill" onclick="setCategory('Finance and Fintech', this)">Fintech</button>
+          <button class="pill" onclick="setCategory('AI, Research and Media-native', this)">AI / Media</button>
+        </div>
+
+        <div class="filter-pills-wrap" style="padding-top: 0.5rem; border-top: 1px solid var(--border-base);">
+          <span class="pill-label">Access:</span>
+          <button class="pill active" onclick="setAccess('all', this)">All</button>
+          <button class="pill" onclick="setAccess('Self-Serve', this)">Self-Serve</button>
+          <button class="pill" onclick="setAccess('Paid Gated', this)">Paid Gated</button>
+          <button class="pill" onclick="setAccess('Partner Gated', this)">Partner Gated</button>
+
+          <span class="pill-label" style="margin-left: 0.75rem;">Buildability:</span>
+          <button class="pill active" onclick="setBuild('all', this)">All</button>
+          <button class="pill" onclick="setBuild('Ready', this)">Ready</button>
+          <button class="pill" onclick="setBuild('Partial', this)">Partial</button>
+          <button class="pill" onclick="setBuild('High Friction', this)">High Friction</button>
+          <button class="pill" onclick="setBuild('Blocked', this)">Blocked</button>
+
+          <span class="pill-label" style="margin-left: 0.75rem;">MCP:</span>
+          <button class="pill active" onclick="setMcp('all', this)">All</button>
+          <button class="pill" onclick="setMcp('Official', this)">Official MCP</button>
+          <button class="pill" onclick="setMcp('Composio', this)">Composio Supported</button>
+        </div>
+      </div>
+
+      <!-- Data Table -->
+      <div class="table-frame">
+        <table class="data-table">
           <thead>
             <tr>
-              <th style="width: 50px;">#</th>
-              <th style="width: 170px;">App</th>
-              <th style="width: 280px;">One-Liner</th>
+              <th style="width: 45px;">#</th>
+              <th style="width: 160px;">Application</th>
+              <th style="width: 290px;">Description</th>
               <th style="width: 140px;">Primary Auth</th>
-              <th style="width: 120px;">Access Gate</th>
-              <th style="width: 130px;">API Surface</th>
-              <th style="width: 110px;">Buildability</th>
+              <th style="width: 110px;">Access Gate</th>
+              <th style="width: 120px;">API Surface</th>
+              <th style="width: 100px;">Buildability</th>
               <th style="width: 140px;">MCP Status</th>
-              <th style="width: 100px;">Evidence</th>
+              <th style="width: 75px;">Docs</th>
             </tr>
           </thead>
           <tbody id="tableBody">
-            <!-- Rendered by JS -->
+            <!-- Populated by JavaScript -->
           </tbody>
         </table>
       </div>
-      <div id="tableCount" style="font-size: 0.8rem; color: var(--text-dim); text-align: right; margin-top: -1.2rem; margin-bottom: 2rem;">
-        Showing 100 of 100 apps
-      </div>
-    </section>
 
-    <!-- Section 3: The Research Agent Architecture -->
-    <section id="agent" class="section-wrap">
-      <div class="section-header">
-        <div class="section-title-wrap">
-          <h2>
-            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #8b5cf6;">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
-            </svg>
-            The Research Agent: Architecture & Human Hand-Off
-          </h2>
-          <p>How the autonomous research pipeline operates, where it succeeds, and where human judgment was required.</p>
-        </div>
-      </div>
+      <!-- Batch Toolbar: Expansion Arrow and Pagination -->
+      <div class="batch-toolbar">
+        <button class="expand-btn" id="expandToggleBtn" onclick="toggleExpandAll()">
+          <span id="expandArrow">&#x2193;</span>
+          <span id="expandBtnLabel">Show all 100 entries</span>
+        </button>
 
-      <div class="agent-pipeline-box">
-        <div class="pipeline-stages">
-          <div class="stage-card">
-            <div class="stage-num">Phase 1</div>
-            <div class="stage-title">Seed Intake</div>
-            <div class="stage-desc">Loads 100 app seeds with hint URLs and categories into structured research queues.</div>
-          </div>
-          <div class="stage-card">
-            <div class="stage-num">Phase 2</div>
-            <div class="stage-title">Portal Ingestion</div>
-            <div class="stage-desc">Scrapes developer documentation, checks OpenAPI / Swagger specs, and queries subdomains.</div>
-          </div>
-          <div class="stage-card">
-            <div class="stage-num">Phase 3</div>
-            <div class="stage-title">Schema Extraction</div>
-            <div class="stage-desc">Classifies auth mechanisms, self-serve friction, API surfaces, and candidate MCP support.</div>
-          </div>
-          <div class="stage-card">
-            <div class="stage-num">Phase 4</div>
-            <div class="stage-title">Verification Loop</div>
-            <div class="stage-desc">Autonomous cross-check: verifies developer portal status codes, probes headers, checks contradictions.</div>
-          </div>
-          <div class="stage-card">
-            <div class="stage-num">Phase 5</div>
-            <div class="stage-title">Pattern Synthesis</div>
-            <div class="stage-desc">Statistical aggregation, blocker ranking, and clustering for Product Ops decision making.</div>
-          </div>
-        </div>
-
-        <div class="split-col-2">
-          <div class="role-box">
-            <h4 style="color: #38bdf8;">
-              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-              </svg>
-              What The Agent Did Autonomously
-            </h4>
-            <ul>
-              <li><strong>Bulk URL Resolution:</strong> Traversed documentation trees across 100 developer sites, locating direct REST & GraphQL API references.</li>
-              <li><strong>Auth Classification:</strong> Identified Bearer tokens, HTTP Basic schemes, and OAuth2 flow parameters from technical headers.</li>
-              <li><strong>MCP Directory Scanning:</strong> Checked official registries and GitHub repositories for native Model Context Protocol implementations.</li>
-              <li><strong>Specification Parsing:</strong> Ingested OpenAPI / Postman schemas to measure API surface breadth (endpoints and operations).</li>
-            </ul>
-          </div>
-
-          <div class="role-box">
-            <h4 style="color: #fb923c;">
-              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-              </svg>
-              Where A Human Was Needed (Product Ops)
-            </h4>
-            <ul>
-              <li><strong>Commercial Paywall Detection:</strong> Discovered that apps like Ahrefs and SE Ranking display open docs but restrict API keys to top-tier enterprise plans.</li>
-              <li><strong>Consumer UI-Only Disambiguation:</strong> Disentangled NotebookLM from the underlying Gemini API, identifying that NotebookLM has no public API.</li>
-              <li><strong>Multi-Product Umbrella Scoping:</strong> Disambiguated Salesforce CRM (self-serve developer orgs) from Salesforce Commerce Cloud (contract-gated Demandware).</li>
-              <li><strong>Local CLI Identification:</strong> Flagged that tools like Sherlock and Mermaid CLI are local utilities that must run in containers, not cloud REST endpoints.</li>
-            </ul>
-          </div>
+        <div class="pagination-controls" id="paginationControls">
+          <button class="page-btn" id="prevPageBtn" onclick="changePage(-1)">&larr; Previous</button>
+          <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); margin: 0 0.5rem;" id="pageIndicator">Page 1 of 10</span>
+          <button class="page-btn" id="nextPageBtn" onclick="changePage(1)">Next &rarr;</button>
         </div>
       </div>
     </section>
 
-    <!-- Section 4: Verification Loops & Hit/Miss Audit -->
-    <section id="verification" class="section-wrap">
-      <div class="section-header">
-        <div class="section-title-wrap">
-          <h2>
-            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #10b981;">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-            Verification Loops & Accuracy Progression
-          </h2>
-          <p>Transparent comparison of Pass 1 (naive scraper), Pass 2 (verification agent), and Pass 3 (human audit).</p>
-        </div>
-      </div>
+    <!-- Section: Research Agent Architecture -->
+    <section id="pipeline" class="block">
+      <h2 class="section-title">Research Agent Architecture and Human Hand-Off</h2>
+      <p class="section-desc">Division of tasks between the autonomous pipeline and human verification.</p>
 
-      <div class="accuracy-track">
-        <div class="step-progression">
-          <div class="acc-step">
-            <div class="acc-pct amber">70.0%</div>
-            <div class="acc-label">Pass 1: Naive Agent</div>
-            <div class="acc-desc">
-              Zero-shot snippet extraction. Blind to enterprise paywalls; assumed all documented APIs were self-serve; misclassified local CLI tools as REST.
-            </div>
-          </div>
-          <div class="acc-step">
-            <div class="acc-pct" style="color: #60a5fa;">87.0%</div>
-            <div class="acc-label">Pass 2: Verification Loop</div>
-            <div class="acc-desc">
-              Autonomous cross-check: verified developer portal HTTP status, audited authentication headers, queried MCP registries (+17.0% accuracy gain).
-            </div>
-          </div>
-          <div class="acc-step highlight">
-            <div class="acc-pct green">100.0%</div>
-            <div class="acc-label">Pass 3: Human Ground Truth</div>
-            <div class="acc-desc">
-              Manual inspection of edge cases: tested corporate account gates, unlisted SDK portals, and UI-only applications.
-            </div>
-          </div>
+      <div class="pipeline-division">
+        <div class="division-col">
+          <h4>Tasks Executed by the Autonomous Agent</h4>
+          <ul>
+            <li>Parsed developer documentation trees across 100 domains.</li>
+            <li>Extracted authentication headers, token formats, and endpoints.</li>
+            <li>Ingested OpenAPI and Swagger schemas to calculate API breadth.</li>
+            <li>Checked public Model Context Protocol registries and repositories.</li>
+            <li>Stored findings in structured JSON and CSV formats.</li>
+          </ul>
         </div>
 
-        <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-main); margin-bottom: 1rem;">
-          Transparent Hit & Miss Audit Log (Case Studies)
-        </h4>
-
-        <div class="audit-grid">
-          <div class="audit-card">
-            <div class="audit-header">
-              <span class="audit-title">#10: DealCloud</span>
-              <span class="badge badge-friction">High Friction</span>
-            </div>
-            <div class="audit-claim">
-              <strong>Pass 1 Claim:</strong> Self-serve REST API with public developer portal.
-            </div>
-            <div class="audit-truth">
-              <strong>Ground Truth:</strong> Gated behind enterprise Intapp sales contract. No public sandbox exists; credentials provisioned per corporate tenant.
-            </div>
-            <div class="audit-lesson">
-              <em>Lesson:</em> Swagger/Redoc portals often look public, but tenant provisioning is strictly enterprise-gated.
-            </div>
-          </div>
-
-          <div class="audit-card">
-            <div class="audit-header">
-              <span class="audit-title">#91: NotebookLM</span>
-              <span class="badge badge-blocked">Blocked</span>
-            </div>
-            <div class="audit-claim">
-              <strong>Pass 1 Claim:</strong> Ready toolkit using Google Cloud Gemini API keys.
-            </div>
-            <div class="audit-truth">
-              <strong>Ground Truth:</strong> Consumer NotebookLM has NO public API. While built on Gemini models, the product itself is closed UI-only.
-            </div>
-            <div class="audit-lesson">
-              <em>Lesson:</em> Never conflate foundation model infrastructure with consumer AI end-products.
-            </div>
-          </div>
-
-          <div class="audit-card">
-            <div class="audit-header">
-              <span class="audit-title">#92: Otter AI</span>
-              <span class="badge badge-ready">Ready (via MCP)</span>
-            </div>
-            <div class="audit-claim">
-              <strong>Pass 1 Claim:</strong> High Friction because REST API requires Enterprise plan.
-            </div>
-            <div class="audit-truth">
-              <strong>Ground Truth:</strong> Otter launched an official managed MCP Server (mcp.otter.ai) providing direct agent querying for transcripts.
-            </div>
-            <div class="audit-lesson">
-              <em>Lesson:</em> Modern SaaS apps frequently bypass legacy REST gating by shipping native MCP endpoints.
-            </div>
-          </div>
-
-          <div class="audit-card">
-            <div class="audit-header">
-              <span class="audit-title">#39: Threads (Meta)</span>
-              <span class="badge badge-ready">Ready</span>
-            </div>
-            <div class="audit-claim">
-              <strong>Pass 1 Claim:</strong> Blocked; no public API exists for Threads.
-            </div>
-            <div class="audit-truth">
-              <strong>Ground Truth:</strong> Threads launched its public Graph API with OAuth2, publishing, and reply management (June 2024).
-            </div>
-            <div class="audit-lesson">
-              <em>Lesson:</em> Outdated LLM knowledge cutoffs must be counterbalanced with real-time web verification.
-            </div>
-          </div>
-
-          <div class="audit-card">
-            <div class="audit-header">
-              <span class="audit-title">#58: Sherlock</span>
-              <span class="badge badge-ready">Ready (CLI)</span>
-            </div>
-            <div class="audit-claim">
-              <strong>Pass 1 Claim:</strong> Cloud REST API with API token authentication.
-            </div>
-            <div class="audit-truth">
-              <strong>Ground Truth:</strong> Sherlock is an open-source Python CLI utility on GitHub. Zero auth; runs locally or inside Docker.
-            </div>
-            <div class="audit-lesson">
-              <em>Lesson:</em> Open-source CLI tools must be classified as containerized local runtimes, not SaaS endpoints.
-            </div>
-          </div>
-
-          <div class="audit-card">
-            <div class="audit-header">
-              <span class="audit-title">#85: iPayX</span>
-              <span class="badge badge-ready">Ready (MCP)</span>
-            </div>
-            <div class="audit-claim">
-              <strong>Pass 1 Claim:</strong> Obscure banking service with no public documentation.
-            </div>
-            <div class="audit-truth">
-              <strong>Ground Truth:</strong> iPayX is an AI FX audit protocol with an active SSE Model Context Protocol server on Supabase edge functions.
-            </div>
-            <div class="audit-lesson">
-              <em>Lesson:</em> Querying Supabase and edge runtime endpoints often reveals agent-native MCP servers.
-            </div>
-          </div>
+        <div class="division-col">
+          <h4>Tasks Executed by Human Verification</h4>
+          <ul>
+            <li>Identified commercial paywalls on open documentation portals (Ahrefs, SE Ranking).</li>
+            <li>Verified that NotebookLM is a UI-only product without a public API.</li>
+            <li>Distinguished Salesforce Core CRM from Salesforce Commerce Cloud.</li>
+            <li>Classified Sherlock and Mermaid CLI as local command-line tools.</li>
+            <li>Located unlisted developer documentation on subdomains (fanbasis).</li>
+          </ul>
         </div>
       </div>
     </section>
 
-    <!-- Section 5: Runnable CLI Proof -->
-    <section id="reproduce" class="section-wrap">
-      <div class="section-header">
-        <div class="section-title-wrap">
-          <h2>
-            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #f97316;">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-            </svg>
-            Runnable Proof: Execute the Research Agent
-          </h2>
-          <p>Reproduce the findings, run verification audits, and query specific apps from the terminal.</p>
+    <!-- Section: Verification Progression & Hit/Miss Audit -->
+    <section id="verification" class="block">
+      <h2 class="section-title">Verification Loops and Accuracy Progression</h2>
+      <p class="section-desc">Measurable accuracy improvement through automated cross-validation and manual review.</p>
+
+      <div class="audit-strip">
+        <div class="audit-step">
+          <div class="audit-step-header">
+            <span class="audit-step-title">Pass 1: Naive Agent</span>
+            <span class="audit-step-pct">70.0%</span>
+          </div>
+          <p class="audit-step-desc">
+            Single-pass extraction. Misclassified enterprise portals as self-serve. 
+            Assumed local CLI tools were cloud REST services.
+          </p>
+        </div>
+
+        <div class="audit-step">
+          <div class="audit-step-header">
+            <span class="audit-step-title">Pass 2: Verification Loop</span>
+            <span class="audit-step-pct" style="color: #60a5fa;">87.0%</span>
+          </div>
+          <p class="audit-step-desc">
+            Automated cross-check. Verified HTTP status codes, tested OpenAPI endpoints, and checked MCP registries. 
+            Yielded a +17.0% accuracy gain.
+          </p>
+        </div>
+
+        <div class="audit-step final">
+          <div class="audit-step-header">
+            <span class="audit-step-title">Pass 3: Human Ground Truth</span>
+            <span class="audit-step-pct" style="color: #34d399;">100.0%</span>
+          </div>
+          <p class="audit-step-desc">
+            Manual inspection of edge cases, payment paywalls, and unlisted subdomains.
+          </p>
         </div>
       </div>
 
-      <div class="terminal-box">
-        <span class="comment"># 1. Profile a specific app (e.g. App #10 DealCloud or #91 NotebookLM)</span><br>
-        <span class="cmd">python3 agent/research_pipeline.py --app-id 10</span><br>
-        <span class="cmd">python3 agent/research_pipeline.py --app-id 91</span><br><br>
+      <h3 style="font-size: 0.95rem; font-weight: 600; margin-bottom: 0.75rem; color: var(--text-main);">
+        Sample Discrepancies and Corrective Actions
+      </h3>
 
-        <span class="comment"># 2. Filter research pipeline by category (e.g. Fintech, Ecommerce, CRM)</span><br>
-        <span class="cmd">python3 agent/research_pipeline.py --category Fintech</span><br><br>
+      <div class="cases-grid">
+        <div class="case-item">
+          <div class="case-title-row">
+            <span class="case-name">DealCloud (#10)</span>
+            <span class="tag tag-friction">High Friction</span>
+          </div>
+          <div class="case-claim"><strong>Pass 1 Claim:</strong> Self-serve REST API with public portal.</div>
+          <div class="case-truth"><strong>Ground Truth:</strong> Gated behind Intapp enterprise contracts. No public sandbox exists.</div>
+          <div class="case-lesson">Open Swagger portals do not imply open developer access.</div>
+        </div>
 
-        <span class="comment"># 3. Run the Verification Engine & Accuracy Benchmark</span><br>
-        <span class="cmd">python3 agent/verifier.py</span><br><br>
+        <div class="case-item">
+          <div class="case-title-row">
+            <span class="case-name">NotebookLM (#91)</span>
+            <span class="tag tag-blocked">Blocked</span>
+          </div>
+          <div class="case-claim"><strong>Pass 1 Claim:</strong> Ready toolkit using Google Gemini API keys.</div>
+          <div class="case-truth"><strong>Ground Truth:</strong> NotebookLM has no public developer API. The product is closed UI-only.</div>
+          <div class="case-lesson">Do not conflate underlying foundation models with consumer AI interfaces.</div>
+        </div>
 
-        <span class="comment"># 4. Generate statistical macro patterns and cluster summary</span><br>
-        <span class="cmd">python3 agent/analyzer.py</span>
+        <div class="case-item">
+          <div class="case-title-row">
+            <span class="case-name">Otter AI (#92)</span>
+            <span class="tag tag-ready">Ready (MCP)</span>
+          </div>
+          <div class="case-claim"><strong>Pass 1 Claim:</strong> High Friction because REST API requires Enterprise plan.</div>
+          <div class="case-truth"><strong>Ground Truth:</strong> Otter operates an official MCP server (mcp.otter.ai) for agent querying.</div>
+          <div class="case-lesson">Modern SaaS applications bypass REST gating by deploying native MCP servers.</div>
+        </div>
+
+        <div class="case-item">
+          <div class="case-title-row">
+            <span class="case-name">Threads (Meta) (#39)</span>
+            <span class="tag tag-ready">Ready</span>
+          </div>
+          <div class="case-claim"><strong>Pass 1 Claim:</strong> Blocked; no public API exists.</div>
+          <div class="case-truth"><strong>Ground Truth:</strong> Threads launched a public Graph API with OAuth2 in June 2024.</div>
+          <div class="case-lesson">Outdated training data must be updated through active web verification.</div>
+        </div>
+
+        <div class="case-item">
+          <div class="case-title-row">
+            <span class="case-name">Sherlock (#58)</span>
+            <span class="tag tag-ready">Ready (CLI)</span>
+          </div>
+          <div class="case-claim"><strong>Pass 1 Claim:</strong> Cloud REST API with API token authentication.</div>
+          <div class="case-truth"><strong>Ground Truth:</strong> Open-source Python CLI utility. Runs locally without authentication.</div>
+          <div class="case-lesson">CLI tools must run in local container environments rather than HTTP endpoints.</div>
+        </div>
+
+        <div class="case-item">
+          <div class="case-title-row">
+            <span class="case-name">fanbasis (#50)</span>
+            <span class="tag tag-ready">Ready</span>
+          </div>
+          <div class="case-claim"><strong>Pass 1 Claim:</strong> Blocked; closed creator platform with no developer surface.</div>
+          <div class="case-truth"><strong>Ground Truth:</strong> Provides checkout SDK on npm and documentation at dev-docs.fanbasis.com.</div>
+          <div class="case-lesson">Rebranded software platforms often host developer portals on dedicated subdomains.</div>
+        </div>
       </div>
     </section>
 
-  </div>
+    <!-- Section: Runnable Agent CLI -->
+    <section id="cli" class="block">
+      <h2 class="section-title">Command Line Interface Commands</h2>
+      <p class="section-desc">Commands to execute the agent, run the verification benchmark, and export data.</p>
 
-  <!-- Detail Modal -->
-  <div id="detailModal" class="modal-backdrop" onclick="closeModal(event)">
-    <div class="modal-box" onclick="event.stopPropagation()">
-      <button class="modal-close" onclick="closeModal(event)">&times;</button>
-      <div id="modalContent">
-        <!-- Rendered by JS -->
+      <div class="code-panel">
+        <span class="code-comment"># 1. Profile specific applications</span><br>
+        <span class="code-command">python3 agent/research_pipeline.py --app-id 10</span><br>
+        <span class="code-command">python3 agent/research_pipeline.py --app-id 91</span><br><br>
+
+        <span class="code-comment"># 2. Filter research pipeline by category</span><br>
+        <span class="code-command">python3 agent/research_pipeline.py --category Fintech</span><br><br>
+
+        <span class="code-comment"># 3. Run the verification benchmark</span><br>
+        <span class="code-command">python3 agent/verifier.py</span><br><br>
+
+        <span class="code-comment"># 4. Generate statistical macro patterns</span><br>
+        <span class="code-command">python3 agent/analyzer.py</span>
       </div>
+    </section>
+
+  </main>
+
+  <!-- Modal Dialog -->
+  <div id="detailModal" class="modal-overlay" onclick="closeModal(event)">
+    <div class="modal-dialog" onclick="event.stopPropagation()">
+      <button class="modal-close-btn" onclick="closeModal(event)">&times;</button>
+      <div id="modalContent"></div>
     </div>
   </div>
 
-  <footer>
-    <p>Composio AI Product Ops Case Study &bull; Built with autonomous agent verification loops &bull; 100 Apps Profiled</p>
+  <footer class="page-footer wrap">
+    <div class="footer-inner">
+      <span>Composio AI Product Ops Case Study &bull; Technical Research on 100 Applications</span>
+      <span>ASD-STE100 Technical English Format</span>
+    </div>
   </footer>
 
   <script>
-    // Embedded Data
     const rawApps = {apps_json_str};
     const patterns = {patterns_json_str};
     const audit = {audit_json_str};
@@ -1754,21 +1598,19 @@ def generate_html():
     let currentMcp = 'all';
     let currentSearch = '';
 
-    // Render Table
-    function renderTable() {{
-      const tbody = document.getElementById('tableBody');
-      const filtered = rawApps.filter(app => {{
-        // Category Filter
+    // Batching & Pagination State
+    let batchSize = 10;
+    let currentPage = 1;
+    let isExpandedAll = false;
+
+    function getFilteredApps() {{
+      return rawApps.filter(app => {{
         if (currentCategory !== 'all' && app.category !== currentCategory) return false;
-        // Access Filter
         if (currentAccess !== 'all' && app.access_model !== currentAccess) return false;
-        // Build Filter
         if (currentBuild !== 'all' && app.buildability !== currentBuild) return false;
-        // MCP Filter
         if (currentMcp === 'Official' && !app.mcp_status.includes('Official')) return false;
         if (currentMcp === 'Composio' && !app.mcp_status.includes('Composio')) return false;
 
-        // Search Filter
         if (currentSearch.trim() !== '') {{
           const q = currentSearch.toLowerCase();
           const match = app.name.toLowerCase().includes(q) ||
@@ -1781,51 +1623,73 @@ def generate_html():
         }}
         return true;
       }});
+    }}
 
-      document.getElementById('tableCount').innerText = `Showing ${{filtered.length}} of ${{rawApps.length}} apps`;
+    function renderTable() {{
+      const tbody = document.getElementById('tableBody');
+      const filtered = getFilteredApps();
+      const totalFiltered = filtered.length;
 
-      if (filtered.length === 0) {{
-        tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; padding: 2.5rem; color: var(--text-dim);">No apps matching the selected filters.</td></tr>`;
+      // Calculate slices
+      let displayedApps = [];
+      let totalPages = Math.ceil(totalFiltered / batchSize);
+      if (totalPages === 0) totalPages = 1;
+      if (currentPage > totalPages) currentPage = totalPages;
+
+      if (isExpandedAll || batchSize >= totalFiltered) {{
+        displayedApps = filtered;
+        document.getElementById('topCountDisplay').innerText = `Showing all ${{totalFiltered}} of ${{rawApps.length}} applications`;
+        document.getElementById('paginationControls').style.display = 'none';
+        document.getElementById('expandArrow').innerHTML = '&#x2191;';
+        document.getElementById('expandBtnLabel').innerText = 'Collapse table';
+      }} else {{
+        const startIndex = (currentPage - 1) * batchSize;
+        const endIndex = Math.min(startIndex + batchSize, totalFiltered);
+        displayedApps = filtered.slice(startIndex, endIndex);
+
+        document.getElementById('topCountDisplay').innerText = `Showing ${{startIndex + 1}}–${{endIndex}} of ${{totalFiltered}} applications (Total: ${{rawApps.length}})`;
+        document.getElementById('paginationControls').style.display = 'flex';
+        document.getElementById('pageIndicator').innerText = `Page ${{currentPage}} of ${{totalPages}}`;
+        document.getElementById('prevPageBtn').disabled = (currentPage === 1);
+        document.getElementById('nextPageBtn').disabled = (currentPage === totalPages);
+        document.getElementById('expandArrow').innerHTML = '&#x2193;';
+        document.getElementById('expandBtnLabel').innerText = `Show all ${{totalFiltered}} entries`;
+      }}
+
+      if (displayedApps.length === 0) {{
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; padding: 2.5rem; color: var(--text-dim);">No applications match the selected criteria.</td></tr>`;
         return;
       }}
 
-      tbody.innerHTML = filtered.map(app => {{
-        // Build badge class
-        let bClass = 'badge-ready';
-        if (app.buildability === 'Partial') bClass = 'badge-partial';
-        else if (app.buildability === 'High Friction') bClass = 'badge-friction';
-        else if (app.buildability === 'Blocked') bClass = 'badge-blocked';
+      tbody.innerHTML = displayedApps.map(app => {{
+        let bClass = 'tag-ready';
+        if (app.buildability === 'Partial') bClass = 'tag-partial';
+        else if (app.buildability === 'High Friction') bClass = 'tag-friction';
+        else if (app.buildability === 'Blocked') bClass = 'tag-blocked';
 
-        // Access badge class
-        let aClass = 'badge-selfserve';
-        if (app.access_model === 'Paid Gated') aClass = 'badge-paidgated';
-        else if (app.access_model === 'Partner Gated') aClass = 'badge-partnergated';
+        let aClass = 'tag-selfserve';
+        if (app.access_model === 'Paid Gated') aClass = 'tag-paid';
+        else if (app.access_model === 'Partner Gated') aClass = 'tag-gated';
 
-        // MCP badge class
-        let mClass = 'badge-mcp-none';
-        if (app.mcp_status.includes('Official')) mClass = 'badge-mcp-official';
-        else if (app.mcp_status.includes('Community')) mClass = 'badge-mcp-comm';
-        else if (app.mcp_status.includes('Composio')) mClass = 'badge-mcp-composio';
+        let mClass = 'tag-mcp';
+        let mcpLabel = app.mcp_status.split('/')[0].trim();
 
         return `
           <tr onclick="openModal(${{app.id}})">
-            <td style="color: var(--text-dim); font-family: monospace;">${{app.id}}</td>
+            <td style="color: var(--text-dim); font-family: var(--font-mono); font-size: 0.75rem;">${{app.id}}</td>
             <td>
-              <div class="app-title">${{app.name}}</div>
-              <div class="app-cat">${{app.category}}</div>
+              <div style="font-weight: 600; color: var(--text-main);">${{app.name}}</div>
+              <div style="font-size: 0.7rem; color: var(--text-dim);">${{app.category}}</div>
             </td>
-            <td style="color: var(--text-muted); font-size: 0.8rem; line-height: 1.4;">${{app.one_liner}}</td>
-            <td><span style="font-family: monospace; font-size: 0.775rem;">${{app.primary_auth}}</span></td>
-            <td><span class="badge ${{aClass}}">${{app.access_model}}</span></td>
-            <td style="font-size: 0.775rem; color: var(--text-muted);">${{app.api_surface.split(',')[0]}}</td>
-            <td><span class="badge ${{bClass}}">${{app.buildability}}</span></td>
-            <td><span class="badge ${{mClass}}">${{app.mcp_status.split('/')[0].trim()}}</span></td>
+            <td style="color: var(--text-muted); font-size: 0.775rem;">${{app.one_liner}}</td>
+            <td><span style="font-family: var(--font-mono); font-size: 0.75rem;">${{app.primary_auth}}</span></td>
+            <td><span class="tag ${{aClass}}">${{app.access_model}}</span></td>
+            <td style="font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono);">${{app.api_surface.split(',')[0]}}</td>
+            <td><span class="tag ${{bClass}}">${{app.buildability}}</span></td>
+            <td><span class="tag ${{mClass}}">${{mcpLabel}}</span></td>
             <td>
-              <a href="${{app.docs_url}}" target="_blank" rel="noopener noreferrer" class="doc-link" onclick="event.stopPropagation()">
-                Docs
-                <svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                </svg>
+              <a href="${{app.docs_url}}" target="_blank" rel="noopener noreferrer" style="color: #60a5fa; text-decoration: none; font-size: 0.75rem;" onclick="event.stopPropagation()">
+                Open &nearr;
               </a>
             </td>
           </tr>
@@ -1833,106 +1697,120 @@ def generate_html():
       }}).join('');
     }}
 
-    // Filter Handlers
-    function setCategoryFilter(cat, elem) {{
+    function handleBatchSizeChange(newSize) {{
+      batchSize = parseInt(newSize, 10);
+      currentPage = 1;
+      isExpandedAll = (batchSize >= 100);
+      renderTable();
+    }}
+
+    function toggleExpandAll() {{
+      isExpandedAll = !isExpandedAll;
+      renderTable();
+    }}
+
+    function changePage(delta) {{
+      currentPage += delta;
+      renderTable();
+    }}
+
+    function setCategory(cat, el) {{
       currentCategory = cat;
-      elem.parentNode.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
-      elem.classList.add('active');
+      currentPage = 1;
+      el.parentNode.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+      el.classList.add('active');
       renderTable();
     }}
 
-    function setAccessFilter(acc, elem) {{
+    function setAccess(acc, el) {{
       currentAccess = acc;
-      elem.parentNode.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
-      elem.classList.add('active');
+      currentPage = 1;
+      el.parentNode.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+      el.classList.add('active');
       renderTable();
     }}
 
-    function setBuildFilter(build, elem) {{
-      currentBuild = build;
-      elem.parentNode.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
-      elem.classList.add('active');
+    function setBuild(b, el) {{
+      currentBuild = b;
+      currentPage = 1;
+      el.parentNode.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+      el.classList.add('active');
       renderTable();
     }}
 
-    function setMcpFilter(mcp, elem) {{
-      currentMcp = mcp;
-      elem.parentNode.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
-      elem.classList.add('active');
+    function setMcp(m, el) {{
+      currentMcp = m;
+      currentPage = 1;
+      el.parentNode.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+      el.classList.add('active');
       renderTable();
     }}
 
-    // Search input listener
     document.getElementById('searchInput').addEventListener('input', (e) => {{
       currentSearch = e.target.value;
+      currentPage = 1;
       renderTable();
     }});
 
-    // Modal
-    function openModal(appId) {{
-      const app = rawApps.find(a => a.id === appId);
+    function openModal(id) {{
+      const app = rawApps.find(a => a.id === id);
       if (!app) return;
 
       const content = document.getElementById('modalContent');
       content.innerHTML = `
-        <div style="display: flex; align-items: baseline; gap: 0.75rem; margin-bottom: 0.5rem;">
-          <h3 style="font-size: 1.4rem; font-weight: 800; color: white;">#${{app.id}}: ${{app.name}}</h3>
-          <span style="font-size: 0.85rem; color: var(--text-dim);">${{app.category}}</span>
-        </div>
-        <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 1.5rem;">${{app.one_liner}}</p>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
-          <div class="modal-field">
-            <div class="modal-field-title">Primary Auth Method</div>
-            <div class="modal-field-content" style="font-family: monospace;">${{app.primary_auth}}</div>
-          </div>
-          <div class="modal-field">
-            <div class="modal-field-title">Supported Auth Schemes</div>
-            <div class="modal-field-content">${{app.auth_methods.join(', ')}}</div>
-          </div>
+        <div style="margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-base);">
+          <div style="font-family: var(--font-mono); font-size: 0.725rem; color: var(--accent-brand);">APPLICATION #${{app.id}}</div>
+          <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-main); margin: 0.2rem 0;">${{app.name}}</h3>
+          <div style="font-size: 0.8rem; color: var(--text-muted);">${{app.category}} &bull; ${{app.website}}</div>
         </div>
 
-        <div class="modal-field">
-          <div class="modal-field-title">Access & Credential Provisioning</div>
-          <div class="modal-field-content">${{app.access_details}}</div>
-        </div>
+        <p style="font-size: 0.85rem; color: var(--text-main); margin-bottom: 1.25rem; line-height: 1.5;">${{app.one_liner}}</p>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
-          <div class="modal-field">
-            <div class="modal-field-title">API Surface & Breadth</div>
-            <div class="modal-field-content">${{app.api_surface}} (${{app.api_breadth}})</div>
+        <div class="modal-grid-2">
+          <div>
+            <div class="field-label">Primary Authentication</div>
+            <div class="field-value font-mono">${{app.primary_auth}}</div>
           </div>
-          <div class="modal-field">
-            <div class="modal-field-title">Model Context Protocol (MCP)</div>
-            <div class="modal-field-content">${{app.mcp_status}}</div>
+          <div>
+            <div class="field-label">Access Model</div>
+            <div class="field-value">${{app.access_model}}</div>
           </div>
         </div>
 
-        <div class="modal-field">
-          <div class="modal-field-title">Buildability Verdict & Primary Blocker</div>
-          <div class="modal-field-content">
-            <strong>[${{app.buildability}}]</strong> &bull; ${{app.main_blocker}}
+        <div style="margin-bottom: 1rem;">
+          <div class="field-label">Access Details</div>
+          <div class="field-value">${{app.access_details}}</div>
+        </div>
+
+        <div class="modal-grid-2">
+          <div>
+            <div class="field-label">API Surface & Breadth</div>
+            <div class="field-value">${{app.api_surface}} (${{app.api_breadth}})</div>
+          </div>
+          <div>
+            <div class="field-label">MCP Support</div>
+            <div class="field-value">${{app.mcp_status}}</div>
           </div>
         </div>
 
-        <div class="modal-field" style="background: rgba(249, 115, 22, 0.08); border: 1px solid rgba(249, 115, 22, 0.25); border-radius: 8px; padding: 0.85rem;">
-          <div class="modal-field-title" style="color: #fb923c;">Composio Toolkit Recommendation</div>
-          <div class="modal-field-content">${{app.composio_strategy}}</div>
+        <div style="margin-bottom: 1rem;">
+          <div class="field-label">Buildability & Primary Blocker</div>
+          <div class="field-value"><strong>[${{app.buildability}}]</strong> &bull; ${{app.main_blocker}}</div>
         </div>
 
-        <div class="modal-field" style="margin-top: 1rem;">
-          <div class="modal-field-title">Verification Notes (Pass 1 vs Ground Truth)</div>
-          <div class="modal-field-content" style="font-size: 0.825rem; color: var(--text-muted); font-style: italic;">
-            ${{app.verification_notes}}
-          </div>
+        <div style="margin-bottom: 1rem; background: var(--bg-subtle); padding: 0.75rem; border-radius: 4px; border: 1px solid var(--border-base);">
+          <div class="field-label" style="color: var(--accent-brand);">Composio Integration Strategy</div>
+          <div class="field-value">${{app.composio_strategy}}</div>
         </div>
 
-        <div style="margin-top: 1.5rem; text-align: right;">
-          <a href="${{app.docs_url}}" target="_blank" rel="noopener noreferrer" class="nav-btn" style="display: inline-flex;">
-            Open Official Documentation
-            <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-            </svg>
+        <div style="margin-bottom: 1.25rem;">
+          <div class="field-label">Verification Note</div>
+          <div class="field-value" style="font-size: 0.775rem; color: var(--text-muted);">${{app.verification_notes}}</div>
+        </div>
+
+        <div style="text-align: right;">
+          <a href="${{app.docs_url}}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+            Open Official Documentation &nearr;
           </a>
         </div>
       `;
@@ -1944,16 +1822,15 @@ def generate_html():
       document.getElementById('detailModal').classList.remove('open');
     }}
 
-    // Export Functionality
-    function exportData(type) {{
-      if (type === 'json') {{
+    function exportData(format) {{
+      if (format === 'json') {{
         const blob = new Blob([JSON.stringify(rawApps, null, 2)], {{ type: 'application/json' }});
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
         a.download = 'composio_100_apps_dataset.json';
         a.click();
-      }} else if (type === 'csv') {{
+      }} else if (format === 'csv') {{
         const headers = ["id", "name", "category", "one_liner", "primary_auth", "access_model", "buildability", "mcp_status", "docs_url"];
         let csv = headers.join(",") + "\\n";
         rawApps.forEach(a => {{
@@ -1988,7 +1865,7 @@ def generate_html():
 
     with open("index.html", "w", encoding="utf-8") as f:
         f.write(html)
-    print("Wrote index.html successfully.")
+    print("Wrote index.html successfully with anti-slop styling, ASD-STE100 copy, batching dropdown, and top counter badge.")
 
 if __name__ == "__main__":
     generate_html()
