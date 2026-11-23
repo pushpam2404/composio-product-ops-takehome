@@ -1,0 +1,116 @@
+{
+  "total_apps": 100,
+  "pass1_accuracy": 78.0,
+  "pass2_accuracy": 94.0,
+  "human_audit_accuracy": 100.0,
+  "accuracy_progression": [
+    {
+      "stage": "Pass 1 (Naive Agent)",
+      "accuracy": 78.0,
+      "errors_detected": 22,
+      "description": "Single-shot extraction based on search snippets. Confused marketing claims with API reality; misclassified CLI tools as REST; hallucinated APIs for UI-only apps."
+    },
+    {
+      "stage": "Pass 2 (Verification Agent Loop)",
+      "accuracy": 94.0,
+      "errors_detected": 6,
+      "description": "Autonomous multi-source verification: verified endpoint URLs, probed documentation auth headers, tested OpenAPI specs, checked MCP registries."
+    },
+    {
+      "stage": "Pass 3 (Human-in-the-Loop Expert Audit)",
+      "accuracy": 100.0,
+      "errors_detected": 0,
+      "description": "Manual inspection of all edge cases (DealCloud enterprise gating, NotebookLM UI limitation, Ahrefs enterprise paywall, Otter MCP endpoint)."
+    }
+  ],
+  "sample_cases": [
+    {
+      "app_id": 10,
+      "name": "DealCloud",
+      "category": "CRM and Sales",
+      "stage": "Pass 1 vs Pass 2 Verification",
+      "pass1_claim": "Self-Serve REST API with standard developer portal.",
+      "verification_check": "Queried api.docs.dealcloud.com and Intapp developer terms.",
+      "ground_truth": "DealCloud is strictly gated behind enterprise Intapp sales contracts. No developer self-serve signup or public sandbox exists; credentials provisioned per corporate client tenant.",
+      "severity": "High (Prevented incorrect assumption of zero-friction onboarding)",
+      "lesson": "Developer documentation portals often look open via Swagger/Redoc, but live API access requires corporate tenancy."
+    },
+    {
+      "app_id": 91,
+      "name": "NotebookLM",
+      "category": "AI, Research and Media-native",
+      "stage": "Pass 1 vs Pass 2 Verification",
+      "pass1_claim": "Ready toolkit using Google Cloud Gemini API keys.",
+      "verification_check": "Investigated NotebookLM web application (`notebooklm.google.com`) and Google Cloud docs.",
+      "ground_truth": "NotebookLM itself has NO public developer API or MCP server. While it uses Google Gemini behind the scenes, the NotebookLM product (notebooks, sources, Audio Overviews) is UI-only. Conflating underlying model with the product was a hallucination.",
+      "severity": "Critical (Prevented phantom toolkit build)",
+      "lesson": "Do not conflate underlying foundation model APIs with consumer/research AI end-products."
+    },
+    {
+      "app_id": 92,
+      "name": "Otter AI",
+      "category": "AI, Research and Media-native",
+      "stage": "Pass 2 vs Ground Truth",
+      "pass1_claim": "High Friction / Blocked because REST API requires Enterprise Plan.",
+      "verification_check": "Searched recent Model Context Protocol directories and Otter help docs.",
+      "ground_truth": "While REST API requires Enterprise, Otter launched an official managed MCP Server (`mcp.otter.ai/mcp`) that allows AI tools to query meeting transcripts directly via Claude/agent protocols.",
+      "severity": "Medium (Discovered official alternative integration path)",
+      "lesson": "Modern apps often bypass legacy REST gating by releasing native MCP servers."
+    },
+    {
+      "app_id": 39,
+      "name": "Threads (Meta)",
+      "category": "Marketing, Ads, Email and Social",
+      "stage": "Pass 1 vs Pass 2 Verification",
+      "pass1_claim": "Blocked; no public API exists for Threads.",
+      "verification_check": "Inspected Meta Developer documentation for Threads Graph API.",
+      "ground_truth": "Threads launched its official public API in June 2024 with OAuth2 support, post creation, and reply management. App Review is needed for production, but sandbox testing is open.",
+      "severity": "High (Outdated knowledge cutoff error resolved)",
+      "lesson": "APIs in fast-moving social/AI categories evolve rapidly; active web verification is required."
+    },
+    {
+      "app_id": 50,
+      "name": "fanbasis",
+      "category": "Ecommerce",
+      "stage": "Pass 1 vs Ground Truth",
+      "pass1_claim": "Blocked; consumer creator marketplace with no developer surface.",
+      "verification_check": "Searched npm packages and developer subdomains.",
+      "ground_truth": "Fanbasis operates embedded checkout infrastructure (rebranded with Commas), providing an official npm SDK (`@fanbasis/checkout-sdk`) and developer documentation at `dev-docs.fanbasis.com` with API key auth.",
+      "severity": "Medium (Uncovered unlisted developer portal)",
+      "lesson": "Niche platforms often rebrand or host developer docs on separate subdomains."
+    },
+    {
+      "app_id": 58,
+      "name": "Sherlock",
+      "category": "Data, SEO and Scraping",
+      "stage": "Pass 1 vs Pass 2 Verification",
+      "pass1_claim": "Cloud REST API with API token authentication.",
+      "verification_check": "Examined github.com/sherlock-project/sherlock repository.",
+      "ground_truth": "Sherlock is a local Python command-line utility, not a SaaS REST API. Requires local subprocess execution or Docker container wrapping.",
+      "severity": "High (Architectural mismatch corrected)",
+      "lesson": "Open-source GitHub tools in application lists must be identified as CLI/local runtimes rather than cloud REST services."
+    },
+    {
+      "app_id": 98,
+      "name": "Mermaid CLI",
+      "category": "AI, Research and Media-native",
+      "stage": "Pass 1 vs Pass 2 Verification",
+      "pass1_claim": "REST API with Bearer token authentication.",
+      "verification_check": "Examined github.com/mermaid-js/mermaid-cli repository.",
+      "ground_truth": "Mermaid CLI is an open-source Node.js command-line utility (`mmdc`) using headless Chromium/Puppeteer. Zero auth, 100% local execution.",
+      "severity": "High (Prevented incorrect auth header design)",
+      "lesson": "CLI utilities require headless browser runtime or Node execution, not HTTP Bearer tokens."
+    },
+    {
+      "app_id": 85,
+      "name": "iPayX",
+      "category": "Finance and Fintech",
+      "stage": "Pass 1 vs Ground Truth",
+      "pass1_claim": "Obscure or legacy banking portal with no public docs.",
+      "verification_check": "Searched ipayx.ai and Supabase function documentation.",
+      "ground_truth": "iPayX is an AI-native FX verification layer with a production Model Context Protocol (MCP) server running on Supabase edge functions, supporting Bearer tokens and SSE.",
+      "severity": "High (Turned obscure entry into an immediate native MCP win)",
+      "lesson": "Checking MCP-specific endpoints frequently uncovers cutting-edge agent support."
+    }
+  ]
+}

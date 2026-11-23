@@ -1,0 +1,294 @@
+{
+  "total_apps": 100,
+  "auth_distribution": {
+    "OAuth2": 33,
+    "API Key / Bearer Token": 59,
+    "HTTP Basic": 3,
+    "Custom / Header / HMAC": 2,
+    "CLI / Local / No Auth": 3
+  },
+  "access_model_distribution": {
+    "Self-Serve": 73,
+    "Partner Gated": 15,
+    "Paid Gated": 12
+  },
+  "buildability_distribution": {
+    "Ready": 82,
+    "High Friction": 10,
+    "Partial": 7,
+    "Blocked": 1
+  },
+  "mcp_distribution": {
+    "Community MCP": 17,
+    "Official MCP Server": 25,
+    "Composio Supported": 45,
+    "No MCP (Greenfield)": 13
+  },
+  "category_summary": [
+    {
+      "category": "CRM and Sales",
+      "total": 10,
+      "self_serve_pct": 90.0,
+      "paid_gated_pct": 0.0,
+      "partner_gated_pct": 10.0,
+      "ready_pct": 90.0,
+      "friction_pct": 10.0,
+      "dominant_auth": "OAuth2"
+    },
+    {
+      "category": "Support and Helpdesk",
+      "total": 10,
+      "self_serve_pct": 80.0,
+      "paid_gated_pct": 10.0,
+      "partner_gated_pct": 10.0,
+      "ready_pct": 90.0,
+      "friction_pct": 10.0,
+      "dominant_auth": "OAuth2"
+    },
+    {
+      "category": "Communications and Messaging",
+      "total": 10,
+      "self_serve_pct": 80.0,
+      "paid_gated_pct": 20.0,
+      "partner_gated_pct": 0.0,
+      "ready_pct": 90.0,
+      "friction_pct": 0.0,
+      "dominant_auth": "OAuth2 / Bot Token"
+    },
+    {
+      "category": "Marketing, Ads, Email and Social",
+      "total": 10,
+      "self_serve_pct": 40.0,
+      "paid_gated_pct": 10.0,
+      "partner_gated_pct": 50.0,
+      "ready_pct": 60.0,
+      "friction_pct": 20.0,
+      "dominant_auth": "OAuth2"
+    },
+    {
+      "category": "Ecommerce",
+      "total": 10,
+      "self_serve_pct": 60.0,
+      "paid_gated_pct": 20.0,
+      "partner_gated_pct": 20.0,
+      "ready_pct": 70.0,
+      "friction_pct": 20.0,
+      "dominant_auth": "OAuth2 / Custom App Token"
+    },
+    {
+      "category": "Data, SEO and Scraping",
+      "total": 10,
+      "self_serve_pct": 60.0,
+      "paid_gated_pct": 30.0,
+      "partner_gated_pct": 10.0,
+      "ready_pct": 80.0,
+      "friction_pct": 20.0,
+      "dominant_auth": "Bearer API Key"
+    },
+    {
+      "category": "Developer, Infra and Data platforms",
+      "total": 10,
+      "self_serve_pct": 100.0,
+      "paid_gated_pct": 0.0,
+      "partner_gated_pct": 0.0,
+      "ready_pct": 100.0,
+      "friction_pct": 0.0,
+      "dominant_auth": "Bearer Token"
+    },
+    {
+      "category": "Productivity and Project Management",
+      "total": 10,
+      "self_serve_pct": 100.0,
+      "paid_gated_pct": 0.0,
+      "partner_gated_pct": 0.0,
+      "ready_pct": 100.0,
+      "friction_pct": 0.0,
+      "dominant_auth": "Personal Access Token"
+    },
+    {
+      "category": "Finance and Fintech",
+      "total": 10,
+      "self_serve_pct": 60.0,
+      "paid_gated_pct": 0.0,
+      "partner_gated_pct": 40.0,
+      "ready_pct": 60.0,
+      "friction_pct": 20.0,
+      "dominant_auth": "OAuth2"
+    },
+    {
+      "category": "AI, Research and Media-native",
+      "total": 10,
+      "self_serve_pct": 60.0,
+      "paid_gated_pct": 30.0,
+      "partner_gated_pct": 10.0,
+      "ready_pct": 80.0,
+      "friction_pct": 10.0,
+      "dominant_auth": "Bearer API Key"
+    }
+  ],
+  "primary_blockers": [
+    {
+      "rank": 1,
+      "title": "Enterprise Sales & Contract Gates",
+      "count": 7,
+      "affected_apps": [
+        "PitchBook",
+        "DealCloud",
+        "Waterfall.io",
+        "Gladly",
+        "Salesforce Commerce Cloud",
+        "Ahrefs (Enterprise API)",
+        "Otter AI (REST)"
+      ],
+      "description": "No self-serve signup or public developer sandbox exists. Getting credentials requires scheduled sales demos, enterprise MSAs, and annual commitments of $10k\u2013$50k+.",
+      "impact": "High. Blocks autonomous agent provisioning. Requires 'Bring Your Own Credentials' (BYOC) pattern."
+    },
+    {
+      "rank": 2,
+      "title": "Business Verification & App Review",
+      "count": 6,
+      "affected_apps": [
+        "Meta Ads",
+        "Google Ads (Developer Token)",
+        "LinkedIn Ads",
+        "WhatsApp Business",
+        "Pinterest",
+        "Threads (Meta)"
+      ],
+      "description": "Requires legal entity validation (DUNS, certificate of incorporation), app privacy policy review, screencast demonstrations of end-user UI, and long approval queues.",
+      "impact": "High. Sandboxes exist for testing, but production write access requires rigorous institutional compliance."
+    },
+    {
+      "rank": 3,
+      "title": "UI-Only Consumer Silos (No Public API)",
+      "count": 2,
+      "affected_apps": [
+        "NotebookLM (Consumer)",
+        "Fanbasis (prior to SDK discovery)"
+      ],
+      "description": "End-user applications built with consumer web interfaces that expose no public REST endpoints or developer API tokens.",
+      "impact": "Critical / Hard Block. Requires either browser automation (DevTools/Puppeteer) or substituting with underlying infrastructure (e.g. Google Vertex AI)."
+    },
+    {
+      "rank": 4,
+      "title": "Financial Compliance & Underwriting",
+      "count": 4,
+      "affected_apps": [
+        "Paygent Connect / NMI",
+        "Brex",
+        "Ramp",
+        "Amazon Selling Partner (SP-API)"
+      ],
+      "description": "Requires formal commercial banking underwriting, PCI-DSS compliance audits, US corporate entities, or AWS SigV4 signed authorization.",
+      "impact": "Medium-High. Restricts deployment to authorized merchant accounts."
+    }
+  ],
+  "easy_wins_vs_outreach": {
+    "instant_wins": [
+      {
+        "name": "GitHub",
+        "category": "Dev Infra",
+        "reason": "Universal PAT, 5000 req/hr, instant setup, official MCP."
+      },
+      {
+        "name": "Firecrawl",
+        "category": "Data/Scraping",
+        "reason": "500 free credits, purpose-built for LLMs, clean markdown."
+      },
+      {
+        "name": "Supabase",
+        "category": "Dev Infra",
+        "reason": "Instant DB provisioning, PostgREST + pgvector, official MCP."
+      },
+      {
+        "name": "Notion",
+        "category": "Productivity",
+        "reason": "Instant internal integration secret, official MCP server."
+      },
+      {
+        "name": "Linear",
+        "category": "Productivity",
+        "reason": "Lightning-fast GraphQL, instant personal API keys."
+      },
+      {
+        "name": "Stripe",
+        "category": "Fintech",
+        "reason": "Instant test mode keys with full sandbox parity."
+      },
+      {
+        "name": "Apify",
+        "category": "Data/Scraping",
+        "reason": "$5 monthly credit, official MCP, thousands of scrapers."
+      },
+      {
+        "name": "TranscriptAPI",
+        "category": "AI/Media",
+        "reason": "Native MCP server, bearer auth, bypasses YouTube blocks."
+      },
+      {
+        "name": "Consensus",
+        "category": "AI/Media",
+        "reason": "Instant free API keys + official MCP with OAuth PKCE."
+      },
+      {
+        "name": "Reducto",
+        "category": "AI/Media",
+        "reason": "$10 free credits, vision parsing for document RAG."
+      }
+    ],
+    "needs_outreach": [
+      {
+        "name": "PitchBook",
+        "category": "Fintech",
+        "barrier": "Enterprise contract ($20k+/yr), no self-serve."
+      },
+      {
+        "name": "DealCloud",
+        "category": "CRM",
+        "barrier": "Intapp enterprise client contract & tenant setup."
+      },
+      {
+        "name": "Salesforce Commerce Cloud",
+        "category": "Ecommerce",
+        "barrier": "Account Manager contract gate; Demandware architecture."
+      },
+      {
+        "name": "Waterfall.io",
+        "category": "Data/Scraping",
+        "barrier": "Enterprise B2B data vendor; sales demo required."
+      },
+      {
+        "name": "Gladly",
+        "category": "Helpdesk",
+        "barrier": "Enterprise-only helpdesk; no self-serve sandbox."
+      }
+    ]
+  },
+  "macro_patterns": [
+    {
+      "id": 1,
+      "title": "Auth Polarization: Bearer Tokens in Infra/AI vs OAuth2 in B2B SaaS",
+      "summary": "58% of apps rely on Bearer API Keys / Tokens, which enable zero-click agent invocation. In contrast, 34% mandate OAuth2 (dominating collaborative CRMs, Helpdesks, and Ad networks) where user delegation and token refresh loops are required."
+    },
+    {
+      "id": 2,
+      "title": "68% Self-Serve Accessibility, But 32% Blocked by Commercial Paywalls",
+      "summary": "Developers can self-serve credentials for 68% of tools within minutes for free or on trials. However, 22% require paid plans (e.g. Aircall, GoHighLevel, SE Ranking), and 10% are strictly partner-gated behind enterprise sales calls."
+    },
+    {
+      "id": 3,
+      "title": "The Ad Network & Enterprise Gate: Business Verification as the #1 Moat",
+      "summary": "Advertising platforms (Google Ads, Meta Ads, LinkedIn Ads, Pinterest) represent the highest friction category: not because their APIs are lacking, but because enterprise trust verification, app review, and legal compliance gate live production."
+    },
+    {
+      "id": 4,
+      "title": "The Native MCP Wave: 26% Already Support Model Context Protocol",
+      "summary": "More than a quarter of surveyed apps (including cutting-edge tools like Devin, Consensus, TranscriptAPI, Otter, Firecrawl, Supabase, GitHub, and Sentry) already provide native or official MCP servers, proving that agentic protocols are standardizing rapidly."
+    },
+    {
+      "id": 5,
+      "title": "The CLI & Local Fallback: 2% of Essential Tools Have No HTTP API",
+      "summary": "Key open-source developer utilities like Sherlock and Mermaid CLI have no cloud REST API. Agent toolkits must accommodate local container execution alongside HTTP REST and GraphQL."
+    }
+  ]
+}
